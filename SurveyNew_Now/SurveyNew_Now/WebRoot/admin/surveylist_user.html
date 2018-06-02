@@ -1,0 +1,442 @@
+﻿<html>
+  <head>
+    <title>调查问卷列表</title>
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <link href="../JS/css/start/jquery-ui.css" rel="stylesheet">
+	<script src="../JS/js/jquery-1.9.1.js"></script>
+	<script src="../JS/js/jquery-ui-1.10.2.custom.js"></script>
+	<script type="text/javascript">
+	
+	  $(function(){
+	  
+		  //用户类型
+		  var user = null;//用户信息的记录者	
+		 
+		  //获得用户信息
+		  function getUserInfo()
+		  {
+		    //获得后台数据
+            $("#userInfo").html("user check...");
+            
+             var request1 = $.ajax({ url: "../userservlet/UserAdminIndexAction",
+                    type: "POST",
+                    data:{comType:3},
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+                
+                    if(msg == "usererror")
+                    {
+                      location.href="../login.jsp";
+                    }
+                    else
+                    {
+                      user = jQuery.parseJSON(msg);//获得用户数据
+                      
+                      $("#userInfo").html(user.userName);//显示用户姓名
+                      
+                    }
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });		  
+		  }
+		  
+		  getUserInfo();//获得用户信息
+		  
+		  //退出按钮
+		  $("#exitBtn").click(function(){
+		  
+             var request1 = $.ajax({ url: "../userservlet/UserAdminIndexAction",
+                    type: "POST",
+                    data:{comType:4},
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+                
+                     if(msg == "loginout")
+                     {
+                        location.href="../index.jsp";
+                     }
+                     else
+                     {
+                        location.href="../login.jsp";
+                     }
+                      
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                
+                    alert("Request failed: " + textStatus);
+                    
+                    location.href = "../login.jsp";
+                    
+                    
+                });		  		     
+		     
+		  });
+		  
+		  function getSurveyList()
+		  {
+		     //请求显示调查问卷列表
+             $("#adminContent").html("<div><a href='index.html'>调查问卷正在加载...</a></div>");
+            
+             var request = $.ajax({ url: "../userservlet/UserSurveyManageAction",
+                    type: "POST",
+                    data:{comType:1,pageNum:1,pageListNum:1},
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+                    $("#adminContent").html(msg);
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+		  }
+		  
+		  getSurveyList();
+		  
+		  //点击请求创建调查问卷
+		 $("#createBtn").click(function(){
+		 
+		   location.href = "surveyedit_user.html";//编辑调查问卷页
+		   
+		 });
+		 
+		 
+		 //获得调查问卷总数
+		  function getSurveyCount()
+		  {
+		     //请求调查问卷总数
+             $("#surveyCount").html("已创建0个调查问卷");
+            
+             var request = $.ajax({ url: "../userservlet/UserSurveyManageAction",
+                    type: "POST",
+                    data:{comType:2},
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+                    $("#surveyCount").html("已创建" + msg + "个调查问卷");
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });		    
+		  }
+		  
+		  getSurveyCount();//获得普通管理员总数
+		  
+		  		
+	 });
+	 
+	 //调查问卷分页请求函数
+     function showBtn(currentPageNum,currentPageListNum)
+     {
+             //请求显示调查问卷列表
+             $("#adminContent").html("<div><a href='index.html'>调查问卷正在加载...</a></div>");
+            
+             var request = $.ajax({ url: "../userservlet/UserSurveyManageAction",
+                    type: "POST",
+                    data:{comType:1,pageNum:currentPageNum,pageListNum:currentPageListNum },
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+                    $("#adminContent").html(msg);
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+     }
+     
+     
+     //根据调查问卷编号删除调查问卷
+     function deleteSurveyDataById(surveyNum)
+     {
+                  var request2 = $.ajax({ url: "../userservlet/UserSurveyManageAction",
+                   				 type: "POST",
+                 			   	 data:{comType:4,surveyId:surveyNum},
+                  			  	 dataType: "html"
+              		  });
+
+ 		    request2.done(function (msg) {
+ 				                 $("#adminContent").append(msg);
+ 		              });
+
+ 		    request2.fail(function (jqXHR, textStatus) {
+ 				                  alert("Request failed: " + textStatus);
+	                  });
+     }
+     
+         //更新显示调查问卷列表
+     	  function getSurveyList()
+		  {
+		     //请求显示调查问卷列表
+             $("#adminContent").html("<div><a href='index.html'>调查问卷正在加载...</a></div>");
+            
+             var request = $.ajax({ url: "../userservlet/UserSurveyManageAction",
+                    type: "POST",
+                    data:{comType:1,pageNum:1,pageListNum:1},
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+                    $("#adminContent").html(msg);
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+		  }
+		  
+		  //获得调查问卷总数
+		  function getSurveyCount()
+		  {
+		     //请求调查问卷总数
+             $("#surveyCount").html("已创建0个调查问卷");
+            
+             var request = $.ajax({ url: "../userservlet/UserSurveyManageAction",
+                    type: "POST",
+                    data:{comType:2},
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+                    $("#surveyCount").html("已创建" + msg + "个调查问卷");
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });		    
+		  }
+     
+    </script>
+    <style type="text/css">
+       .adminbg
+       {
+         width:100%;
+         height:100px;
+         padding:0px;
+         margin-top:0px;
+         margin-left:0px;
+         margin-right:0px;
+         background:url(../image/adminbg3.png) repeat-x;
+         display:inline-block;
+       }
+       body
+       {
+         margin:0px;
+         padding:0px;
+        
+       }
+       .adminM
+       {
+         height:30px;
+         margin-top:59px;
+         margin-left:0px;
+         margin-bottom:0px;
+       }
+       .adminM a
+       {
+
+         font-size:16px;
+         color:#DDDDDD;
+         text-decoration:none;
+       }
+       .adminM a:hover
+       {
+         font-size:16px;
+         color:#FFFFFF;
+         text-decoration:none;
+       }
+       .adminM a:active
+       {
+         font-size:16px;
+         color:#DDDDDD;
+         text-decoration:none;
+       }
+       .adminManager
+       {
+         margin-top:10px;
+         width:100%;
+         display:inline-block;
+       }
+       
+    .foot
+    {
+
+    }
+    .foot a
+    {
+     font-size:13px;
+     color:#696969;
+     text-decoration:none;
+    }
+    
+    .foot a:hover,.foot a:active
+    {
+     font-size:13px;
+     color:#003333;
+     text-decoration:none;
+    }
+    
+    #adminHeader
+    {
+     width:920px;
+     height:40px;
+    }
+    
+    #adminContent
+    {
+      width:920px;
+      color:#009966;
+      font-size:12px;
+ 
+    }
+    
+    #adminContent a
+    {
+      color:#009966;
+      font-size:12px;
+      text-decoration:none;
+    }
+    
+    #adminContent a:hover,#adminContent a:active
+    {
+      color:red;
+      font-size:12px;
+      text-decoration:none;   
+    }
+    
+    #surveyCount
+    {
+      margin-left:10px;
+      height:40px;
+      line-height:40px;
+      float:left;
+      color:#666666;
+      font-size:16px;
+      font-weight:bold;
+    }
+    
+    #surveySearch
+    {
+      float:left;
+      width:600px;
+      height:40px;
+    }
+    
+    #createSurvey
+    {
+      float:left;
+      height:40px;
+    }
+    
+    #createBtn
+    {
+      width:120px;
+      height:35px;
+      border:0px;
+      background:url(../image/btn_bg_b.gif);
+      font-weight:bold;
+      font-size:14px;
+      color:#FFFFFF;
+      cursor:pointer;
+    }
+    
+    .tableClass
+    {
+      color:#009966;
+      font-size:13px;
+      width:918px;
+    }
+    
+    .tdHeader
+    {
+      background:#CCCCFF;
+      font-weight:bold;
+      height:30px;
+      border-bottom:1px solid #336699;
+      border-top:1px solid #336699;
+    }
+    
+    .trContent
+    {
+      background:#FFFFFF;
+    }
+    .trContent:hover
+    {
+      background:#FFFF99;
+    }
+    .tdContent
+    {
+      height:33px;
+      border-bottom:1px solid #336699;
+    }
+    </style>
+  </head>
+  
+  <body>
+     <div id="adminMain" style="width:100%;">
+         <div class="adminbg" align="center">
+            <div style="float:left;margin-left:50px;width:300px;height:82px;margin-top:4px;">
+              <img src="../image/adminlogo.png" />
+            </div>
+            <div style="float:left;height:99px;width:600px;">
+              <div class="adminM">
+               <span><a href="index_user.html"><b>&nbsp;首页&nbsp;</b></a></span>
+               <span><a href="surveylist_user.html"><b><font color="#FFFFFF">&nbsp;调查问卷管理&nbsp;</font></b></a></span>
+
+              </div> 
+            </div>
+            <div style="float:right;height:64px;margin-right:70px;margin-top:25px;">
+              <div id="userInfo" style="float:left;background:url(../image/adminName.png);width:160px;height:26px;color:#ffffff;font-size:12px;line-height:24px;">
+                  usercheck...
+              </div>
+              <div style="float:left;">&nbsp;</div>
+              <div id='exitBtn' style="float:left;background:url(../image/adminQuit.png);width:40px;height:26px;color:#ffffff;font-size:12px;line-height:24px;cursor:pointer;">
+                                                退出
+              </div>
+            </div>
+         </div>
+       
+         <div id="adminManager" class="adminManager" align="center">
+          <div style="width:920px;">
+          	<div id="adminHeader">
+          		<div id="surveyCount"></div>
+          		<div id="surveySearch"></div>
+          		<div id="createSurvey"><input type="button" id="createBtn" value="创建问卷" /></div>
+          	</div>
+          	<div id="adminLine"><img src="../image/surveyline.png" /></div>
+          	<div id="adminContent"></div>
+          </div>
+         </div>
+         
+         
+         <div id="adminFooter" align="center" class="foot">
+           <div style="width:920px;line-height:29px;margin-top:30px;height:30px;border-top:1px dotted black;" align="left">
+          
+              <span><a href="#">购买系统</a></span>
+              <span><a href="#">客户合作</a></span>
+              <span><a href="#">技术支持</a></span>
+              <span><a href="#">关于我们</a></span>
+            
+           </div>
+           
+           <div style="width:920px;height:16px;border-top:1px dotted black;">
+                        <a href="#">版权所有&copy;然然工作室</a>
+           </div>
+         </div>
+      </div>
+  </body>
+</html>

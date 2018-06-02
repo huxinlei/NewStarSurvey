@@ -1,0 +1,453 @@
+﻿<html>
+  <head>
+
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+    <meta http-equiv="description" content="this is my page" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link href="JS/css/start/jquery-ui.css" rel="stylesheet" />
+	<script type="text/javascript" src="JS/js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="JS/js/jquery-ui-1.10.2.custom.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            $("#indexDiv").mouseover(function () {
+                if ($(this).hasClass("nav1")) {
+                    $(this).removeClass("nav1").addClass("nav1_1"); //鼠标到按钮上时改成样式nav1_1
+                }
+            });
+            $("#indexDiv").mouseout(function () {
+                if ($(this).hasClass("nav1_1")) {
+                    $(this).removeClass("nav1_1").addClass("nav1"); //当鼠标离开按钮时样式改成nav1
+                }
+            });
+
+            $("#surveyDiv").mouseover(function () {
+                if ($(this).hasClass("nav2")) {
+                    $(this).removeClass("nav2").addClass("nav2_1"); //鼠标到按钮上时改成样式nav1_1
+                }
+            });
+
+            $("#surveyDiv").mouseout(function () {
+                if ($(this).hasClass("nav2_1")) {
+                    $(this).removeClass("nav2_1").addClass("nav2"); //当鼠标离开按钮时样式改成nav1
+                }
+            });
+
+            $("#helpDiv").mouseover(function () {
+                if ($(this).hasClass("nav3")) {
+                    $(this).removeClass("nav3").addClass("nav3_1"); //鼠标到按钮上时改成样式nav1_1
+                }
+            });
+
+            $("#helpDiv").mouseout(function () {
+                if ($(this).hasClass("nav3_1")) {
+                    $(this).removeClass("nav3_1").addClass("nav3"); //当鼠标离开按钮时样式改成nav1
+                }
+            });
+
+        });
+    </script>
+    <style type="text/css">
+    body
+    {
+      margin:0px;
+      padding:0px;
+      background-color:#f5f5f5;
+    }
+     .nav1
+     {
+      float:right;
+      margin-bottom:0px;
+      height:70px;
+      line-height:70px;
+      width:159px;
+      background:url(image/index1.png);
+      cursor:pointer;
+
+      }
+      .nav1 a
+      {
+        font-size:18px;
+        color:#000000;
+        text-decoration:none;
+      }
+      .nav1_1
+      {
+      float:right;
+      margin-bottom:0px;
+      height:70px;
+      line-height:70px;      
+      width:159px;
+      background:url(image/index1_1.png);
+      cursor:pointer;
+
+      }
+      
+      .nav1_1 a
+      {
+        color:#000000;
+        text-decoration:none;
+      }
+      .nav2
+      {
+      float:right;
+      margin-bottom:0px;
+      font-size:18px;
+      height:70px;
+      line-height:70px;
+      width:159px;
+      background:url(image/index2.png);
+      cursor:pointer;  
+      }
+      
+      .nav2 a
+      {
+        font-size:18px;
+        color:#000000;
+        text-decoration:none;
+      }
+      .nav2_1
+      {
+      float:right;
+      margin-bottom:0px;
+      height:70px;
+      line-height:70px;      
+      width:159px;
+      background:url(image/index2_1.png);
+      cursor:pointer; 
+      }
+      
+      .nav2_1 a
+      {
+        color:#000000;
+        text-decoration:none;
+      }
+      
+      .nav3
+      {
+      float:right;
+      margin-bottom:0px;
+      font-size:18px;
+      height:70px;
+      line-height:70px;      
+      width:159px;
+      background:url(image/index3.png);
+      cursor:pointer;            
+      }
+      
+      .nav3 a
+      {
+        font-size:18px;
+        color:#000000;
+        text-decoration:none;
+      }
+      
+      .nav3_1
+      {
+      float:right;
+      margin-bottom:0px;
+      height:70px;
+      line-height:70px;      
+      width:159px;
+      background:url(image/index3_1.png);
+      cursor:pointer;  
+      }
+      
+      .nav3_1 a
+      {
+        color:#000000;
+        text-decoration:none;
+      }
+      .surN1
+      {
+       float:left;
+       margin-left:4px;
+       margin-top:5px;
+       padding-top:5px;
+       line-height:30px;
+       padding-left:1px;
+       width:300px;
+       height:200px;
+       text-align:left;
+       background:url(image/surveyN1.png) no-repeat;
+      }
+  .foot
+  {
+      height:75px;
+      width:920px;
+      background:url(image/footbg.gif);
+      margin-top:2px;
+  }
+    .foot a
+    {
+     font-size:12px;
+     color:#000;
+     text-decoration:none;
+    }
+    #sectionContent a
+    {
+     font-size:13px;
+     color:#000;
+     text-decoration:none;
+    }
+    #sectionContent a:hover,#sectionContent a:active
+    {
+     font-size:13px;
+     color:red;
+     text-decoration:none;
+    }
+    
+    #newContent a
+    {
+     font-size:13px;
+     color:#000;
+     text-decoration:none;
+    }
+    #newContent a:hover,#sectionContent a:active
+    {
+     font-size:13px;
+     color:red;
+     text-decoration:none;
+    }
+    
+        
+    #surveyContent a
+    {
+     font-size:13px;
+     color:#000;
+     text-decoration:none;
+    }
+    #surveyContent a:hover,#sectionContent a:active
+    {
+     font-size:13px;
+     color:red;
+     text-decoration:none;
+    }
+    
+   .foot a:hover,.foot a:active
+    {
+     font-size:12px;
+     color:#003333;
+     text-decoration:none;
+    }
+    
+    .login
+    {
+     padding-top:2px;
+     float:left;
+     width:46px;
+     height:23px;
+     background:url(image/reg_btn.gif) no-repeat;
+    }
+    .login a,.login a:active
+    {
+     color:white;
+     font-size:16px;
+     text-decoration:none;
+    }
+    .login a:hover
+    {
+     color:white;
+     font-size:16px;
+     text-decoration:none;
+     cursor:pointer;
+    }
+    
+    .help
+    {
+      float:left;
+    }
+   .help a,.help a:active
+    {
+    color:black;
+    font-size:16px;
+    text-decoration:none;
+    }
+    .help a:hover
+    {
+    color:#cc3300;
+    font-size:16px;
+    text-decoration:none;
+    cursor:pointer;
+    }
+    #surveyTitle
+    {
+        color:Blue;
+        font-size:18px;
+        font-style:italic;
+        padding-left:10px;
+    }
+    #newTitle
+    {
+        color:Blue;
+        font-size:18px;
+        font-style:italic;
+        padding-left:10px;
+    }
+    #sectionTitle
+    {
+        color:Blue;
+        font-size:18px;
+        font-style:italic;
+        padding-left:10px;
+    }
+    
+     #adminContent
+    {
+      width:920px;
+      color:#009966;
+      font-size:12px;
+      margin-bottom:10px;
+    }
+    
+    #adminContent a
+    {
+      color:#009966;
+      font-size:12px;
+      text-decoration:none;
+    }
+    
+    #adminContent a:hover,#adminContent a:active
+    {
+      color:red;
+      font-size:12px;
+      text-decoration:none;   
+    }
+    </style>
+    <title>帮助中心</title>
+  </head>
+  
+  <body>
+       <div align="center" style="margin:0px;padding:0px;width:100%;height:100%;">
+       <div style="height:130px;width:920px;padding-top:0px;background:url(image/bg.gif);">
+          <div style="float:left;padding-top:10px;padding-left:20px;">
+             <img src="image/logo1.png"/>
+          </div>
+          <div style="float:right;">
+            <div style="margin:0px;padding:0px;height:60px;">
+              <div style="float:right;margin-top:10px;margin-right:20px;">
+                  <div style="padding:0px;margin:0px;float:left;"><img src="image/login.gif" /></div>
+                  <div class="login"><a href="login.jsp">登录</a></div>
+                  <div style="float:left;margin-left:20px;"><img src="image/kefu.gif" /></div>
+                  <div class="help"><a href="help.html"><b>帮助中心</b></a></div>
+              </div>
+            </div>
+            <div>
+              <div class="nav3" id="helpDiv"><b><a href="help.html">帮助中心</a></b></div>
+              <div class="nav2" id="surveyDiv"><b><a href='surveyList.jsp'>调查问卷列表</a></b></div>
+              <div class="nav1" id="indexDiv"><b><a href='index.jsp'>首页</a></b></div>
+            </div>
+         </div>
+       </div> 
+       <!--帮助中心主要内容-->
+       <div style="height:210px;width:920px;">
+            <div id="adminLine"><img src="image/surveyline.png" /></div>
+          	<div id="adminContent">
+               <div>
+               <div align="left" style="padding-left:30px;width:920px;height:40px;line-height:40px;margin-top:20px;font-size:18px;font-weight:bold;color:#666666;">新星调查问卷系统简介</div>
+               <div align="left" style="padding-left:10px;line-height:30px;width:920px;border:1px dotted ##CCFFFF;">
+                  本系统立足实用，调查问卷系统主要实现的功能有用户管理、调查问卷管理、调查项管理、访问者信息管理、统计分析模块。
+                  本系统是一个小型系统，力求达到简单实用，用户分两种类型，支持多用户管理和发布调查问卷，界面简洁整齐，功能简单易用。
+                  具体功能要求，用户管理功能包括查看普通用户、搜索普通用户、添加普通用户、删除普通用户、个人用户详细修改，系统起始
+                  时默认隐含系统管理员账户；调查问卷管理包括查看调查问卷、添加调查问卷、删除调查问卷、修改调查问卷详细信息，其中删
+                  除调查问卷时与调查问卷相关的调查项和访问者信息将会同时被删除；调查项管理是在调查问卷管理的基础上开发的，用以实现
+                  调查问卷内容的查看、添加、删除和修改，目前调查项分为三类，有单选项、多选项和文本项，分别满足不同的调查内容要求；
+                  访问者信息管理包括访问者信息查看、删除功能，在用户提交调查问卷时添加访问者信息以及访问者回答调查问卷选择项信息；
+                  统计分析模块以调查问卷管理、调查项管理和访问者详细信息管理为基础开发的功能，主要实现的功能是单选项、多选项调查项
+                  访问情况图示展示和文本调查项回答列表展示功能；调查项回答信息管理功能主要实现了用户回答调查项信息的查看、删除功能，
+                  在用户提交调查问卷信息时添加用户回答调查问卷调查项信息。
+               </div>
+              </div>
+              <!----------->
+               <div>
+               <div align="left" style="padding-left:30px;width:920px;height:40px;line-height:40px;margin-top:20px;font-size:18px;font-weight:bold;color:#666666;">新星调查问卷系统实现过程</div>
+               <div align="left" style="padding-left:10px;line-height:30px;width:920px;border:1px dotted ##CCFFFF;">
+               在选定课题基于jsp+javabean+servlet技术调查问卷系统后，需要根据任务书的要求和规定完成各项任务，在实践中实现和完善
+               系统的各项功能。开发过程参照软件工程的实施过程，首先进行需求分析、系统概要设计、详细设计等设计任务，期间要完成相关
+               资料的理解阅读工作，为系统的正式开发打好技术和知识基础；其次将要进入系统开发阶段，这段时间主要处理系统功能的细节关
+               系以及代码实现，细节的复杂性和技术问题的具体性使这一阶段成为开发过程中花费时间最长的一个阶段；最后进入的阶段是程序
+               的测试和发布，这一阶段主要工作是测试程序功能，解决程序中的错误和漏洞，最终发布系统成品。
+               系统开发分为三个阶段，第一个阶段进行系统功能设计、数据库设计以及后台程序功能点的简单实现；第二个阶段进行系统界面设
+               计以及良好用户体验的开发工作；第三个阶段是在前两个阶段的基础上实现系统功能，完成程序开发。第一阶段根据任务书的要求
+               和规定进行系统功能设计，根据系统功能要求设计数据库表结构，编写数据库创建脚本；然后用jsp、javabean、servlet技术实
+               现系统要求的功能点，此阶段功能点只是简单实现，界面简单。第二阶段以阶段一的功能点和具体实现为基础设计系统界面和功能
+               菜单，为用户美观、方便的操作界面。第三个阶段是以前两个阶段的开发为基础进行系统整合，将美观、方便的界面和系统后台功
+               能点绑定到一起，最终实现系统的开发。
+               </div>
+              </div>
+              <!----------->
+               <div>
+                 <div align="left" style="padding-left:30px;width:920px;height:40px;line-height:40px;margin-top:20px;font-size:18px;font-weight:bold;color:#666666;">新星调查问卷系统角色和功能</div>
+                 <div align="left" style="padding-left:10px;line-height:30px;width:920px;border:1px dotted ##CCFFFF;">
+                    浏览者可以浏览感兴趣的调查问卷，提交自己的回答内容，同时也可以查看调查问卷的统计结果。<br />
+                    管理员分为两类，有超级管理员和普通管理员。<br />
+                    超级管理员权限最高，可以管理普通管理员和访问者信息，实现对他们的增删改查功能，同时可以管理全局内的调查问卷，实现对调查问卷的修改、发布、删除功能。<br />
+                    普通管理员只能管理自己的个人信息和自己创建的调查问卷，其中包括修改个人密码和调查问卷你的修改、发布、删除功能。<br />
+                 </div>
+               </div>
+              <!----------->
+               <div>
+                  <div align="left" style="padding-left:30px;width:920px;height:40px;line-height:40px;margin-top:20px;font-size:18px;font-weight:bold;color:#666666;">联系我们</div>
+                 <div align="left" style="padding-left:10px;line-height:30px;width:920px;border:1px dotted ##CCFFFF;">
+                     <div style="height:30px;line-height:30px;margin-left:20px;margin-top:10px;"><span style="margin-left:10px;">QQ:</span><span style="margin-left:30px;"><img src="image/qqbtn.gif" /></span></div>   
+                     <div style="height:30px;line-height:30px;margin-left:20px;"><span style="margin-left:10px;">旺旺:</span><span style="margin-left:30px;"><img src="image/wangwang.gif" /></span></div>
+                     <div style="height:30px;line-height:30px;margin-left:20px;"><span style="margin-left:10px;">msn:</span><span style="margin-left:30px;">xinxing@hotmail.com</span></div>
+                     <div style="height:30px;line-height:30px;margin-left:20px;"><span style="margin-left:10px;">邮箱:</span><span style="margin-left:30px;">xinxing@gmail.com</span></div>     
+                 </div>
+               </div>
+              <!----------->
+            </div>
+
+       </div>
+       <!--帮助中心主要内容-->
+       <div class="foot">
+           
+           <div style="height:52px;margin:0px;" align="center">
+           
+             <div style="width:25%;float:left;margin-top:5px;">
+                 <div style="width:100px;">
+                     <div style="float:left;"><img src="image/contact_1.gif"/></div>
+                     <div style="float:left;margin-left:8px;height:36px;line-height:36px;vertical-align:middle;">
+                        <a href="help.html">购买系统</a>
+                     </div>
+                  </div>
+              </div>
+              
+              <div style="width:25%;float:left;margin-top:5px;">
+               <div style="width:100px;">
+                   <div style="float:left;"><img src="image/contact_2.gif"/></div>
+                   <div style="float:left;margin-left:8px;height:36px;line-height:36px;vertical-align:middle;">
+                     <a href="help.html">客户合作</a>
+                  </div>
+                </div>
+              </div>
+              
+              <div style="width:25%;float:left;margin-top:5px;" align="center">
+                 <div style="width:100px;">
+                     <div style="float:left;"><img src="image/contact_3.gif"/></div>
+                     <div style="float:left;margin-left:8px;height:36px;line-height:36px;vertical-align:middle;">
+                       <a href="help.html">技术支持</a>
+                     </div>
+                 </div>
+              </div>
+              
+              <div style="width:25%;float:left;margin-top:5px;" align="center">
+                <div style="width:100px;">
+                    <div style="float:left;"><img src="image/contact_4.gif"/></div>
+                    <div style="float:left;margin-left:8px;height:36px;line-height:36px;vertical-align:middle;">
+                      <a href="help.html">关于我们</a>
+                    </div>
+                </div>
+              </div>
+              
+           </div>
+           
+           <div style="height:14px;margin:0px;">
+             <a href="help.html">版权所有&copy;然然工作室</a>
+           </div>
+       </div>
+    </div>
+
+  </body>
+
+</html>

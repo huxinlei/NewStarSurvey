@@ -1,0 +1,2058 @@
+﻿<!doctype html>
+<html lang="us">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>调查问卷设计页</title>
+	<link href="../JS/css/start/jquery-ui.css" rel="stylesheet">
+	<script type="text/javascript" src="../JS/js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="../JS/js/jquery-ui-1.10.2.custom.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            //加入访问后台的代码
+            String.prototype.trim = function () {
+                return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+            }
+
+
+            //用户类型
+            var user = null; //用户信息的记录者	
+
+            //获得用户信息
+            function getUserInfo() {
+                //获得后台数据
+                $("#userInfo").html("user check...");
+
+                var request1 = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data: { comType: 3 },
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+
+                    if (msg == "usererror") {
+                        location.href = "../login.jsp";
+                    }
+                    else {
+                        user = jQuery.parseJSON(msg); //获得用户数据
+
+                        //更新用户管理层数据
+
+                        $("#userInfo").html(user.userName); //显示用户姓名
+
+                    }
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+            }
+
+            getUserInfo(); //获得用户信息
+            //退出按钮
+            $("#exitBtn").click(function () {
+
+                var request1 = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data: { comType: 4 },
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+
+                    if (msg == "loginout") {
+                        location.href = "../index.jsp";
+                    }
+                    else {
+                        location.href = "../login.jsp";
+                    }
+
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+
+                    alert("Request failed: " + textStatus);
+
+                    location.href = "../login.jsp";
+
+
+                });
+
+            });
+
+            //加入访问后台的代码
+
+
+            //调查问卷类
+            function Survey(surveyInfo, sItemList) {
+                this.surveyInfo = surveyInfo; //调查问卷的基本信息
+
+                this.sItemList = sItemList; //调查项列表
+            }
+            //调查问卷项类
+            function SurveyItem(itemInfo, answerList) {
+                this.itemInfo = itemInfo;
+
+                this.answerList = answerList;
+            }
+
+            //调查问卷基本信息类
+            function SurveyInfo(surveyId, surveyTitle, surveyOwnerID,
+       surveyLink, surveyCreateDateTime, surveyExpirationDateTime) {
+                this.surveyId = surveyId;
+
+                this.surveyTitle = surveyTitle;
+
+                this.surveyOwnerID = surveyOwnerID,
+
+                this.surveyLink = surveyLink;
+
+                this.surveyCreateDateTime = surveyCreateDateTime;
+
+                this.surveyExpirationDateTime = surveyExpirationDateTime;
+            }
+
+            //调查项基本信息类
+            function ItemInfo(itemID, itemCaption, itemType, itemAttribute
+       , itemOwnerID, itemOwnerSurveyID, radioCheckboxCount) {
+                this.itemID = itemID;
+
+                this.itemCaption = itemCaption;
+
+                this.itemType = itemType;
+
+                this.itemAttribute = itemAttribute;
+
+                this.itemOwnerID = itemOwnerID;
+
+                this.itemOwnerSurveyID = itemOwnerSurveyID;
+
+                this.radioCheckboxCount = radioCheckboxCount;
+            }
+
+            //多选答案项基本信息类
+            function aCheckbox(checkboxId, checkboxOwnerID, checkboxIndex,
+      checkboxCaption, defaultSelected, selectedCount) {
+                this.checkboxId = checkboxId;
+
+                this.checkboxOwnerID = checkboxOwnerID;
+
+                this.checkboxIndex = checkboxIndex;
+
+                this.checkboxCaption = checkboxCaption;
+
+                this.defaultSelected = defaultSelected;
+
+                this.selectedCount = selectedCount;
+            }
+
+            //单选答案项基本信息类
+            function aRadio(radioId, radioOwnerId, radioIndex, radioCaption
+      , defaultSelected, selectedCount) {
+                this.radioId = radioId;
+
+                this.radioOwnerId = radioOwnerId;
+
+                this.radioIndex = radioIndex;
+
+                this.radioCaption = radioCaption;
+
+                this.defaultSelected = defaultSelected;
+
+                this.selectedCount = selectedCount;
+            }
+
+            //文本答案项基本信息类
+            function aText(textId, textOwnerId, textCaption, textContent) {
+                this.textId = textId;
+
+                this.textOwnerId = textOwnerId;
+
+                this.textCaption = textCaption;
+
+                this.textContent = textContent;
+            }
+
+            itemRadio1 = new ItemInfo(1000, "请选择", 0, 0, 1000, 1, 0);
+
+            var aRadio1 = new Array(3); //单选答案项列表
+
+            var item1 = new Array(3);
+
+            aRadio1[0] = new aRadio(1000, 1000, 0, "选择1", 0, 0);
+
+            aRadio1[1] = new aRadio(1001, 1000, 0, "选择2", 0, 0);
+
+            aRadio1[2] = new aRadio(1002, 1000, 0, "选择3", 0, 0);
+
+            item1[0] = new SurveyItem(itemRadio1, aRadio1); //生成调查项
+
+            itemCheckbox1 = new ItemInfo(1001, "请选择", 1, 0, 1000, 1, 0);
+
+            var aCheckbox1 = new Array(3); //多选答案项列表
+
+            aCheckbox1[0] = new aCheckbox(1000, 1001, 0, "选择1", 0, 0);
+
+            aCheckbox1[1] = new aCheckbox(1001, 1001, 0, "选择2", 0, 0);
+
+            aCheckbox1[2] = new aCheckbox(1002, 1001, 0, "选择3", 0, 0);
+
+            item1[1] = new SurveyItem(itemCheckbox1, aCheckbox1); //生成调查项
+
+
+
+            //文本项基本信息
+            itemText1 = new ItemInfo(1002, "文本题", 2, 0, 1000, 1, 0);
+
+            item1[2] = new SurveyItem(itemText1, null);
+
+            surveyInfo1 = new SurveyInfo(1, "第一个调查问卷系统", 1000, "第一次测试，第一次测试，第一次测试", "2013-03-29", "2013-04-25");
+
+            var survey1 = new Survey(surveyInfo1, item1); //生成调查问卷实体类
+
+
+            ///////////////////////////getSurvey////////////////////////////////////////////////////////
+            //从后台获得调查问卷信息，更新调查项不显示当前调查项
+            function getSurvey() {
+
+                $("#questionListDiv").html("正在加载调查问卷！"); //清空div中的内容
+
+                var request = $.ajax({ url: "../servlet/SurveyManageAction",
+                    type: "POST",
+                    data: { comType: 6 },
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+
+                    // alert(msg);
+
+
+                    //msg = "{\"surveyInfo\":{\"surveyId\":1,\"surveyTitle\":\"2013年的调查卷\",\"surveyOwnerID\":1000,\"surveyLink\":\"ddddddddddddddddddddddddddddddddddddd\",\"surveyCreateDateTime\":\"2013-03-20\",\"surveyExpirationDateTime\":\"2013-3-24\"},\"sItemList\":[{\"itemInfo\":{\"itemID\":2,\"itemCaption\":\"你的姓作？\",\"itemType\":2,\"itemAttribute\":0,\"itemOwnerID\":1000,\"itemOwnerSurveyID\":1,\"radioCheckboxCount\":0},\"answerList\":[{\"radioId\":1,\"radioOwnerId\":4,\"radioIndex\":0,\"radioCaption\":\"北京\",\"defaultSelected\":0,\"selectedCount\":15},{\"radioId\":2,\"radioOwnerId\":4,\"radioIndex\":0,\"radioCaption\":\"上海\",\"defaultSelected\":0,\"selectedCount\":3}]}]}";
+                    //alert(msg);
+                    survey1 = jQuery.parseJSON(msg); //获得用户数据
+
+                    $("#previewBtn").html("<a href='../showsurvey.jsp?surveyId=" + survey1.surveyInfo.surveyId + "'>预览</a>");
+
+                    $("#surveyResultBtn").html("<a href='../showresult.jsp?surveyid=" + survey1.surveyInfo.surveyId + "'>统计分析</a>")
+
+                    surveyInfoShow();
+
+                    questionList(); //设置调查项到问卷内容中
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                    $("#questionListDiv").html("调查问卷加载失败！"); //清空div中的内容
+                });
+            }
+
+
+            //更新调查项并显示当前编辑项
+            function getSurvey1() {
+
+                $("#questionListDiv").html("正在加载调查问卷！"); //清空div中的内容
+
+                var request = $.ajax({ url: "../servlet/SurveyManageAction",
+                    type: "POST",
+                    data: { comType: 6 },
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+
+                    // alert(msg);
+
+
+                    //msg = "{\"surveyInfo\":{\"surveyId\":1,\"surveyTitle\":\"2013年的调查卷\",\"surveyOwnerID\":1000,\"surveyLink\":\"ddddddddddddddddddddddddddddddddddddd\",\"surveyCreateDateTime\":\"2013-03-20\",\"surveyExpirationDateTime\":\"2013-3-24\"},\"sItemList\":[{\"itemInfo\":{\"itemID\":2,\"itemCaption\":\"你的姓作？\",\"itemType\":2,\"itemAttribute\":0,\"itemOwnerID\":1000,\"itemOwnerSurveyID\":1,\"radioCheckboxCount\":0},\"answerList\":[{\"radioId\":1,\"radioOwnerId\":4,\"radioIndex\":0,\"radioCaption\":\"北京\",\"defaultSelected\":0,\"selectedCount\":15},{\"radioId\":2,\"radioOwnerId\":4,\"radioIndex\":0,\"radioCaption\":\"上海\",\"defaultSelected\":0,\"selectedCount\":3}]}]}";
+                    //alert(msg);
+                    survey1 = jQuery.parseJSON(msg); //获得用户数据
+
+                    surveyInfoShow();
+
+                    questionList(); //设置调查项到问卷内容中
+
+                    currentItemClick(); //设置当前调查项
+
+
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                    $("#questionListDiv").html("调查问卷加载失败！"); //清空div中的内容
+                });
+            }
+
+            getSurvey(); //获得调查问卷信息
+            ///////////////////////////getSurvey////////////////////////////////////////////////////////
+
+            //var currentItem = survey1.sItemList[0];//设置当前编辑调查项
+
+            var currentIndex = 0; ////设置当前编辑调查项下标
+
+            function questionClear() {
+
+                oldQuestionId = "#question" + currentIndex; //设置原来的为不可编辑模式
+
+                if ($(oldQuestionId).hasClass("surveyItem1")) {
+
+                    $(oldQuestionId).removeClass("surveyItem1").addClass("surveyItem");
+                }
+
+                currentIndex = 0; //设置调查问卷显示项下标
+            }
+
+
+            //编辑调查问卷项编辑层
+            function editItemDiv() {
+
+                $("#questionIndexSpan").html("<b>Q" + currentIndex + "</b>"); //设置题号
+
+                $("#iItemCaption").val(survey1.sItemList[currentIndex].itemInfo.itemCaption); //设置标题
+
+
+                switch (survey1.sItemList[currentIndex].itemInfo.itemType) {
+
+                    case 0:
+
+                        $("#answerItemTitle").css("display", "inline"); //设置标题提示
+
+                        answerListShow();
+
+                        break;
+                    case 1:
+
+                        $("#answerItemTitle").css("display", "inline"); //设置标题提示
+
+                        answerListShow();
+
+                        break;
+                    case 2:
+
+                        $("#answerItemTitle").css("display", "none"); //隐藏标题提示
+
+                        answerListShow();
+
+                        break;
+                }
+
+
+            }
+
+            //根据下标删除调查项删除
+            function deleteByAnIndex(index) {
+
+                /* for (tIndex = index + 1; tIndex < survey1.sItemList[currentIndex].answerList.length; tIndex++, index++) {
+
+                survey1.sItemList[currentIndex].answerList[index] = survey1.sItemList[currentIndex].answerList[tIndex];
+
+                }
+
+                survey1.sItemList[currentIndex].answerList.length = survey1.sItemList[currentIndex].answerList.length - 1;*/
+                type1 = survey1.sItemList[currentIndex].itemInfo.itemType; //获得调查项类型
+                id1 = -1;
+                if (type1 == 0) {
+                    id1 = survey1.sItemList[currentIndex].answerList[index].radioId;
+                }
+                else {
+                    id1 = survey1.sItemList[currentIndex].answerList[index].checkboxId;
+                }
+
+                if (id1 == -1) {
+                    survey1.sItemList[currentIndex].answerList.splice(index, 1); //删除指定元素
+
+                    // alert(survey1.sItemList[currentIndex].answerList.length);
+
+                    answerListShow(); //显示调查项
+
+                    questionList(); //设置调查项到问卷内容中
+                }
+                else {
+                    deleteItemAnById(type1, id1); //删除数据库中的调查项
+                }
+
+            }
+
+            //删除调查项的答案项
+            function deleteItemAnById(type1, id1) {
+
+                var request1 = $.ajax({ url: "../servlet/SurveyManageAction",
+                    type: "POST",
+                    data: { comType: 11, type: type1, id: id1 },
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+
+                    if (msg == "success") {
+
+                        alert("答案项删除成功！");
+
+                        survey1.sItemList[currentIndex].answerList.splice(index, 1); //删除指定元素
+
+                        answerListShow(); //显示调查项
+
+                        questionList(); //设置调查项到问卷内容中
+
+                        currentItemClick(); //显示当前选中项
+
+                        return true;
+                    }
+                    else {
+
+                        alert("答案项删除失败！");
+
+                        return false;
+
+                    }
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+
+            }
+
+            //添加调查项答案项方法
+            function addAnswerItem() {
+
+                switch (survey1.sItemList[currentIndex].itemInfo.itemType) {
+                    case 0:
+
+                        radioCaption = "选择" + survey1.sItemList[currentIndex].answerList.length; //设置显示标题
+
+                        aRadioNew = new aRadio(-1, 1000, 0, radioCaption, 0, 0);
+
+                        survey1.sItemList[currentIndex].answerList.push(aRadioNew); //添加新的调查项
+
+                        answerListShow(); //显示调查项
+
+                        break;
+
+                    case 1:
+
+                        checkCaption = "选择" + survey1.sItemList[currentIndex].answerList.length; //设置显示标题
+
+                        aCheckboxNew = new aCheckbox(-1, 1000, 0, checkCaption, 0, 0);
+
+                        survey1.sItemList[currentIndex].answerList.push(aCheckboxNew); //添加新的调查项
+
+                        answerListShow(); //显示调查项
+
+                        break;
+
+                }
+
+                questionList(); //更新问题列表
+            }
+
+            //设置answerList的显示
+            function answerListShow() {
+
+                //var answerList = "";
+
+                $("#answerListDiv").html(""); //设置显示内容到层
+
+
+                if (survey1.sItemList[currentIndex].itemInfo.itemType != 2) {
+
+                    if (survey1.sItemList[currentIndex].answerList.length == 0) {
+
+                        $("#answerListDiv").html("<div id='imgAddAnswer' style='margin:10px;font-size:14px;'><span style='cursor:pointer'><img src='../image/add.png'>&&添加答案项</span></div>");
+
+                        //添加按钮click事件
+                        $("#imgAddAnswer").click(function () {
+
+                            addAnswerItem(); //添加答案项
+
+                        });
+
+                    }
+
+                    for (anIndex = 0; anIndex < survey1.sItemList[currentIndex].answerList.length; anIndex++) {
+
+                        var answerItemId = 0; //回答项的编号
+
+                        var answerItemCaption = ""; //回答项的标题
+
+                        switch (survey1.sItemList[currentIndex].itemInfo.itemType) {
+
+                            case 0:
+
+                                //answerItemId = survey1.sItemList[currentIndex].answerList[anIndex].radioId; //获得单选项的编号
+
+                                answerItemCaption = survey1.sItemList[currentIndex].answerList[anIndex].radioCaption; //获得单选项的标题
+
+                                break;
+
+                            case 1:
+
+                                //answerItemId = survey1.sItemList[currentIndex].answerList[anIndex].checkboxId; //获得单选项的编号
+
+                                answerItemCaption = survey1.sItemList[currentIndex].answerList[anIndex].checkboxCaption; //获得单选项的标题
+
+                                break;
+                        }
+
+                        //alert(answerItemCaption); //显示标题
+
+                        answerTemp = "<div>" + "<span><input type='text' id='iAnswerItem" + currentIndex + anIndex + "' value ='" + answerItemCaption
+                        + "'></span><span style='cursor:pointer'><img src='../image/delete.png'  id='imgAnswer" + anIndex + "' alt='" + anIndex
+                        + "'></span><span style='cursor:pointer'><img src='../image/add.png' id='imgAddAnswer" + anIndex + "'></span></div>";
+
+                        $("#answerListDiv").append(answerTemp); //设置显示内容到层
+
+                        imgId = "#imgAnswer" + anIndex; //删除按钮click事件
+
+                        imgAddId = "#imgAddAnswer" + anIndex; //添加按钮click事件
+
+                        //删除按钮click事件
+                        $(imgId).click(function () {
+                            //alert($(this).attr("alt"));
+                            //deleteByAnIndex(anIndex);
+
+                            index = $(this).attr("alt"); //获得调查项在列表中的位置
+
+                            updateItemAndAnswer(); //更新调查项内容
+
+                            deleteByAnIndex(index); //删除相应的调查项
+
+                            currentItemClick(); //设置当前调查项
+
+                        });
+                        //添加按钮click事件
+                        $(imgAddId).click(function () {
+
+                            updateItemAndAnswer(); //更新调查项内容
+
+                            addAnswerItem(); //添加答案项
+
+                            currentItemClick(); //设置当前调查项
+
+                        });
+                        //answerList += answerTemp; //设置显示字符串
+                    }
+
+                }
+            }
+
+
+            //设置调查项到问卷内容中
+            function questionList() {
+
+                $("#questionListDiv").html(""); //清空div中的内容
+
+                for (var qIndex = 0; qIndex < survey1.sItemList.length; qIndex++) {
+
+                    questionNum = "<span><b>Q" + qIndex + "</b></span>"; //设置题号
+
+                    questionTit = "<span style='margin-left:6px;'>" + survey1.sItemList[qIndex].itemInfo.itemCaption + "</span>"; //设置标题
+
+                    ///alert(questionNum);
+
+                    questionTitleDiv = "<div id='itemTitle" + qIndex + "' style='margin-left:10px;margin-bottom:10px;'>" + questionNum + questionTit + "</div>";
+
+                    itemAnswerList = ""; //调查项答案列表
+
+                    //调查项类型不同做不同的处理
+                    //alert(survey1.sItemList[qIndex].itemInfo.itemType);
+
+                    switch (survey1.sItemList[qIndex].itemInfo.itemType) {
+                        case 0:
+
+
+                            for (itemIndex = 0; itemIndex < survey1.sItemList[qIndex].answerList.length; itemIndex++) {
+
+                                itemAnswerDiv = "<div id = 'itemAnswer" + itemIndex + "' " + "title='" + itemIndex + "' style='margin-left:12px;'>";
+
+                                itemAnswerContent = "<input type='radio' id = '" + survey1.sItemList[qIndex].itemInfo.itemID + "' " + "name = 'radio" +
+                                survey1.sItemList[qIndex].itemInfo.itemID + "'>" + survey1.sItemList[qIndex].answerList[itemIndex].radioCaption;
+
+                                itemAnswerDiv += itemAnswerContent; //设置调查项答案内容
+
+                                itemAnswerDiv += "</div>"; //设置完成一个调查项
+
+                                itemAnswerList += itemAnswerDiv;
+                            }
+
+                            break;
+                        case 1:
+
+                            for (itemIndex1 = 0; itemIndex1 < survey1.sItemList[qIndex].answerList.length; itemIndex1++) {
+
+                                itemAnswerDiv1 = "<div id = 'itemAnswer" + itemIndex1 + "' " + "title='" + itemIndex1 + "' style='margin-left:12px;'>";
+
+                                itemAnswerContent1 = "<input type='checkbox' id = '" + survey1.sItemList[qIndex].itemInfo.itemID + "' " + "name = 'checkbox" +
+                                survey1.sItemList[qIndex].itemInfo.itemID + "'>" + survey1.sItemList[qIndex].answerList[itemIndex1].checkboxCaption;
+
+                                itemAnswerDiv1 += itemAnswerContent1; //设置调查项答案内容
+
+                                itemAnswerDiv1 += "</div>"; //设置完成一个调查项
+
+                                itemAnswerList += itemAnswerDiv1;
+                            }
+
+                            //alert("1");
+                            break;
+
+                        case 2:
+                            //alert("2");
+                            itemAnswerDiv2 = "<div id = 'itemAnswer0' " + "title='0' style='margin-left:12px;margin-bottom:10px;'>";
+
+                            itemAnswerContent2 = "<input type='text' id='" + survey1.sItemList[qIndex].itemInfo.itemID + "'" + "name='text" +
+                            survey1.sItemList[qIndex].itemInfo.itemID + "'>";
+
+                            itemAnswerDiv2 += itemAnswerContent2; //设置输入项样式
+
+                            itemAnswerDiv2 += "</div>"; //设置完成一个调查项
+
+                            //alert(itemAnswerDiv2);
+
+                            itemAnswerList += itemAnswerDiv2;
+
+                            break;
+                    }
+
+
+                    $("#questionListDiv").append("<div id='question" + qIndex + "' title='" + qIndex
+                     + "' class='surveyItem' align='left'>"
+                     + questionTitleDiv + itemAnswerList + "</div>");
+
+                    questionId = "#question" + qIndex; //设置问题的点击事件
+
+                    $(questionId).click(function () {
+
+                        // alert($(this).attr("title"));
+                        oldQuestionId = "#question" + currentIndex; //设置原来的为不可编辑模式
+
+                        if ($(oldQuestionId).hasClass("surveyItem1")) {
+
+                            $(oldQuestionId).removeClass("surveyItem1").addClass("surveyItem");
+                        }
+
+                        currentIndex = $(this).attr("title"); //设置当前调查项下标
+
+                        if ($(this).hasClass("surveyItem")) {
+
+                            $(this).removeClass("surveyItem").addClass("surveyItem1"); //设置点击后的样式
+                        }
+
+                        editQuestionDivShow(); //调用编辑调查问卷项层的click事件
+
+                        editItemDiv(); //编辑调查项层显示
+
+
+                    });
+                }
+
+                surveyTemplateSize(); //重新确定网页大小
+            }
+
+            //显示当前调查问卷项使用click事件
+            function currentItemClick() {
+
+                if (survey1.sItemList.length != 0) {
+                    //设置显示调查项
+                    questionId = "#question" + currentIndex; //设置原来的为不可编辑模式
+
+                    $(questionId).click(); //点击事件
+                }
+            }
+
+            //添加调查问卷文本型
+            $("#addText").click(function () {
+
+                itemText = new ItemInfo(-1, "文本题", 2, 0, 1000, 1, 0); //生成文本项的基本信息
+
+                itemNew = new SurveyItem(itemText, null);
+
+                currentIndex = survey1.sItemList.length; //设置当前编辑项为新添加的调查项
+
+                survey1.sItemList[survey1.sItemList.length] = itemNew; //获得新的文本调查项
+
+                questionList(); //重新显示列表
+
+                surveyTemplateSize(); //重新确定网页大小
+
+                currentItemClick();
+
+            });
+
+            //添加调查问卷单选项类型
+            $("#addRadio").click(function () {
+
+                itemRadio = new ItemInfo(-1, "请选择", 0, 0, 1000, 1, 0);
+
+                var aRadioNew = new Array(3); //单选答案项列表
+
+                aRadioNew[0] = new aRadio(-1, -1, 0, "选择1", 0, 0);
+
+                aRadioNew[1] = new aRadio(-1, -1, 0, "选择2", 0, 0);
+
+                aRadioNew[2] = new aRadio(-1, -1, 0, "选择3", 0, 0);
+
+                itemNew = new SurveyItem(itemRadio, aRadioNew); //生成调查项
+
+                currentIndex = survey1.sItemList.length; //设置当前编辑项为新添加的调查项
+
+                survey1.sItemList[survey1.sItemList.length] = itemNew; //获得新的文本调查项
+
+                questionList(); //重新显示列表
+
+                surveyTemplateSize(); //重新确定网页大小
+
+                currentItemClick();
+
+            });
+
+            //添加调查问卷多选项类型
+            $("#addCheckbox").click(function () {
+
+                itemCheckbox1 = new ItemInfo(-1, "请选择", 1, 0, 1000, 1, 0);
+
+                var aCheckbox1 = new Array(3); //多选答案项列表
+
+                aCheckbox1[0] = new aCheckbox(-1, -1, 0, "选择1", 0, 0);
+
+                aCheckbox1[1] = new aCheckbox(-1, -1, 0, "选择2", 0, 0);
+
+                aCheckbox1[2] = new aCheckbox(-1, -1, 0, "选择3", 0, 0);
+
+                itemNew = new SurveyItem(itemCheckbox1, aCheckbox1); //生成调查项
+
+                currentIndex = survey1.sItemList.length; //设置当前编辑项为新添加的调查项
+
+                survey1.sItemList[survey1.sItemList.length] = itemNew; //获得新的文本调查项
+
+                questionList(); //重新显示列表
+
+                surveyTemplateSize(); //重新确定网页大小
+
+                currentItemClick(); //设置当前调查项
+            });
+
+
+            //调查问卷编辑模板大小
+            function surveyTemplateSize() {
+
+                var height1 = $("#questionListDiv").height();
+
+                var height2 = $("#surveyInfo").height();
+
+                var heightA = height1 + height2 + 30;
+
+                if (heightA > 800) {
+
+                    $("#surveyManager").height(heightA);
+
+                    //$("#editQuestion").height(heightA); //设置编辑调查项层的高度
+
+                    $("#editSurvey").height(heightA); //设置编辑调查问卷层的高度
+
+                    $("#questionList").height(heightA); //设置编辑调查问卷列表
+                }
+                else {
+
+                    $("#surveyManager").height(800);
+
+                    //$("#editQuestion").height(800); //设置编辑调查项层的高度
+
+                    $("#editSurvey").height(800); //设置编辑调查问卷层的高度
+
+                    $("#questionList").height(800); //设置编辑调查问卷列表
+
+                }
+
+            }
+
+            //显示调查问卷项编辑按钮
+            function editQuestionDivShow() {
+                //alert($("#editQuestionDiv").hasClass("surveyMenu2Bg"));
+                if ($("#editQuestionDiv").hasClass("surveyMenu2Bg"))
+                    $("#editQuestionDiv").removeClass("surveyMenu2Bg").addClass("surveyMenu2Bg1");
+
+                if (!$("#addQuestionDiv").hasClass("surveyMenu2Bg")) {
+                    $("#addQuestionDiv").removeClass("surveyMenu2Bg1").addClass("surveyMenu2Bg");
+                }
+
+                if (!$("#setSurveyDiv").hasClass("surveyMenu2Bg")) {
+                    $("#setSurveyDiv").removeClass("surveyMenu2Bg1").addClass("surveyMenu2Bg");
+                }
+                $("#addQuestion").css("display", "none");
+                $("#editQuestion").css("display", "inline");
+                $("#editSurvey").css("display", "none");
+                //$("#editQuestion").offset({ top: surveyManagerTop1, left: surveyEditLeft });//设置层所在位置
+
+                var surveyManagerSLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+                var surveyManagerSTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+                if (surveyManagerSTop > surveyManagerTop1) {
+
+                    //if(surveyManagerSTop > 2000)alert(surveyManagerSTop);
+
+                    $("#editQuestion").offset({ top: surveyManagerSTop, left: surveyEditLeft });
+                }
+                else {
+
+
+
+                    $("#editQuestion").offset({ top: surveyManagerTop1, left: surveyEditLeft });
+                }
+
+                //界面刷新
+                if ($("#surveyInfo").hasClass("surveyInfo1")) {
+                    $("#surveyInfo").removeClass("surveyInfo1").addClass("surveyInfo");
+                }
+            }
+            //alert($("#addQuestionDiv").hasClass("surveyMenu2Bg1"));
+            //调查问卷标题
+
+            //获得新的字符串
+            function getNewString(str, size) {
+                newStr = "";
+
+                for (index = 0; index <= str.length; index = index + size) {
+
+                    if (index + size < str.length) {
+                        newStr += str.slice(index, index + size);
+                        newStr += "<br>";
+                    }
+                    else {
+                        newStr += str.slice(index, str.length);
+                        newStr += "<br>";
+                    }
+                }
+                return newStr;
+            }
+
+            function surveyInfoShow() {
+
+                var surveyTitle = "<div align='center'><b>"
+             + getNewString(survey1.surveyInfo.surveyTitle, 90) +
+             "</b></div>";
+
+                var surveyLink = "<div style='font-size:12px;'>"
+            + getNewString(survey1.surveyInfo.surveyLink, 90) +
+            "</div>";
+
+                $("#surveyInfo").html(surveyTitle + surveyLink); //设置调查问卷标题
+
+                //显示调查问卷名称和调查问卷描述
+                $("#iSurveyTitle").html(survey1.surveyInfo.surveyTitle);
+
+                $("#iSurveyLink").html(survey1.surveyInfo.surveyLink);
+            }
+
+            $("#surveyInfo").click(function () {
+                //显示调查问卷基本信息层
+                if ($("#surveyInfo").hasClass("surveyInfo")) {
+                    $("#surveyInfo").removeClass("surveyInfo").addClass("surveyInfo1");
+                }
+
+                $("#setSurveyDiv").click(); //调用设置调查问卷的click事件
+
+                //显示调查问卷名称和调查问卷描述
+                $("#iSurveyTitle").html(survey1.surveyInfo.surveyTitle);
+
+                $("#iSurveyLink").html(survey1.surveyInfo.surveyLink);
+            });
+
+            //添加调查项菜单显示功能
+            $("#itemAddBtn").click(function () {
+
+                $("#addQuestionDiv").click(); //触发添加调查项层按钮的click事件
+
+            });
+
+            //删除调查项功能
+            function deleteItemById(itemId1) {
+                var request1 = $.ajax({ url: "../servlet/SurveyManageAction",
+                    type: "POST",
+                    data: { comType: 10, itemId: itemId1 },
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+
+                    if (msg == "success") {
+
+                        alert("调查项删除成功！");
+
+                        survey1.sItemList.splice(currentIndex, 1); //删除当前项
+
+                        currentIndex = 0; //设置当前选中项为第一项
+
+                        questionList(); //显示问题列表
+
+                        currentItemClick(); //显示当前选中项
+
+                        return true;
+                    }
+                    else {
+
+                        alert("调查项删除失败！");
+
+                        return false;
+
+                    }
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+
+            }
+            //删除调查项功能
+            //删除当前编辑调查项功能
+            $("#itemDeleteBtn").click(function () {
+
+                if (survey1.sItemList.length != 0) {
+
+                    if (survey1.sItemList[currentIndex].itemInfo.itemID == -1) {
+
+                        survey1.sItemList.splice(currentIndex, 1); //删除当前项
+
+                        currentIndex = 0; //设置当前选中项为第一项
+
+                        questionList(); //显示问题列表
+
+                        currentItemClick(); //显示当前选中项
+                    }
+                    else {
+
+                        deleteItemById(survey1.sItemList[currentIndex].itemInfo.itemID);
+
+
+
+                    }
+                }
+            });
+
+            //保存当前调查项功能
+            /*         $("#itemUpdateBtn").ajaxStart()
+            {
+            alert("数据传递开始！");
+            }*/
+            //添加修改调查项
+            function itemOperator(type1, idStr, captionStr) {
+
+                var request1 = $.ajax({ url: "../servlet/SurveyManageAction",
+                    type: "POST",
+                    data: { comType: 12, type: type1, idstr: idStr, captionStr: captionStr },
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+
+
+                    if (msg == "success") {
+
+                        alert("调查项保存成功！");
+
+                        getSurvey1();
+
+                        questionList(); //显示问题列表
+
+
+
+                        return true;
+                    }
+                    else {
+
+                        alert("调查项保存失败！");
+
+                        return false;
+
+                    }
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+            }
+
+            //更新调查项的数据信息
+            function updateItemAndAnswer() {
+
+                if (survey1.sItemList.length == 0) {
+                    //alert("当前不存在调查项！");
+                    return; //如果当前不存在调查项
+                }
+                //
+                type1 = survey1.sItemList[currentIndex].itemInfo.itemType; //survey1.sItemList[currentIndex].answerList.splice(index, 1); //删除指定元素
+
+                captionStr = $("#iItemCaption").val(); //设置标题;
+
+                survey1.sItemList[currentIndex].itemInfo.itemCaption = captionStr;
+
+                answerItemCaption = "";
+
+                if (survey1.sItemList[currentIndex].answerList == null || survey1.sItemList[currentIndex].answerList.length == 0) {
+                    return;
+                }
+
+                switch (type1) {
+                    case 0:
+                        for (anIndex = 0; anIndex < survey1.sItemList[currentIndex].answerList.length; anIndex++) {
+
+                            itemCaptionStr = "#iAnswerItem" + currentIndex + anIndex;
+
+                            answerItemCaption = $(itemCaptionStr).val();
+
+                            survey1.sItemList[currentIndex].answerList[anIndex].radioCaption = answerItemCaption;
+                        }
+
+                        break;
+                    case 1:
+
+                        for (anIndex = 0; anIndex < survey1.sItemList[currentIndex].answerList.length; anIndex++) {
+
+
+                            itemCaptionStr = "#iAnswerItem" + currentIndex + anIndex;
+
+                            answerItemCaption = $(itemCaptionStr).val();
+
+                            survey1.sItemList[currentIndex].answerList[anIndex].checkboxCaption = answerItemCaption;
+
+                        }
+
+                        break;
+
+
+                }
+
+            }
+            //添加修改调查项
+            $("#itemUpdateBtn").click(function () {
+
+                //'iAnswerItem" + currentIndex + anIndex + "'
+                if (survey1.sItemList.length == 0) {
+                    alert("当前不存在调查项！");
+                    return; //如果当前不存在调查项
+                }
+                //
+                type1 = survey1.sItemList[currentIndex].itemInfo.itemType; //survey1.sItemList[currentIndex].answerList.splice(index, 1); //删除指定元素
+
+                idStr = survey1.sItemList[currentIndex].itemInfo.itemID.toString(); //编号
+
+                captionStr = $("#iItemCaption").val(); //设置标题;
+
+                answerItemId = -1;
+
+                answerItemCaption = "";
+
+                switch (type1) {
+                    case 0:
+                        for (anIndex = 0; anIndex < survey1.sItemList[currentIndex].answerList.length; anIndex++) {
+
+                            answerItemId = survey1.sItemList[currentIndex].answerList[anIndex].radioId; //获得单选项的编号
+
+                            itemCaptionStr = "#iAnswerItem" + currentIndex + anIndex;
+
+                            answerItemCaption = $(itemCaptionStr).val();
+
+                            idStr += ",";
+                            idStr += answerItemId;
+                            captionStr += ",";
+                            captionStr += answerItemCaption;
+                        }
+
+                        break;
+                    case 1:
+
+                        for (anIndex = 0; anIndex < survey1.sItemList[currentIndex].answerList.length; anIndex++) {
+
+                            answerItemId = survey1.sItemList[currentIndex].answerList[anIndex].checkboxId; //获得多选项的编号
+
+                            itemCaptionStr = "#iAnswerItem" + currentIndex + anIndex;
+
+                            answerItemCaption = $(itemCaptionStr).val();
+
+                            idStr += ",";
+                            idStr += answerItemId;
+                            captionStr += ",";
+                            captionStr += answerItemCaption;
+                        }
+
+                        break;
+
+
+                }
+
+                itemOperator(type1, idStr, captionStr);
+
+            });
+
+            //添加调查项层
+            $("#addQuestionDiv").click(function () {
+
+                if ($("#addQuestionDiv").hasClass("surveyMenu2Bg"))
+                    $("#addQuestionDiv").removeClass("surveyMenu2Bg").addClass("surveyMenu2Bg1");
+
+                if (!$("#editQuestionDiv").hasClass("surveyMenu2Bg")) {
+                    $("#editQuestionDiv").removeClass("surveyMenu2Bg1").addClass("surveyMenu2Bg");
+                }
+
+                if (!$("#setSurveyDiv").hasClass("surveyMenu2Bg")) {
+                    $("#setSurveyDiv").removeClass("surveyMenu2Bg1").addClass("surveyMenu2Bg");
+                }
+
+                $("#addQuestion").css("display", "inline");
+                $("#editQuestion").css("display", "none");
+                $("#editSurvey").css("display", "none");
+
+
+                var surveyManagerSLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+                var surveyManagerSTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+                if (surveyManagerSTop > surveyManagerTop) {
+
+                    $("#addQuestion").offset({ top: surveyManagerSTop, left: surveyEditLeft });
+                }
+                else {
+                    $("#addQuestion").offset({ top: surveyManagerTop, left: surveyEditLeft });
+                }
+
+                //界面刷新
+                if ($("#surveyInfo").hasClass("surveyInfo1")) {
+                    $("#surveyInfo").removeClass("surveyInfo1").addClass("surveyInfo");
+                }
+
+                //刷新调查项的显示
+                questionClear();
+
+
+            });
+
+
+            //编辑调查项层
+            $("#editQuestionDiv").click(function () {
+                //alert($("#editQuestionDiv").hasClass("surveyMenu2Bg"));
+                if ($("#editQuestionDiv").hasClass("surveyMenu2Bg"))
+                    $("#editQuestionDiv").removeClass("surveyMenu2Bg").addClass("surveyMenu2Bg1");
+
+                if (!$("#addQuestionDiv").hasClass("surveyMenu2Bg")) {
+                    $("#addQuestionDiv").removeClass("surveyMenu2Bg1").addClass("surveyMenu2Bg");
+                }
+
+                if (!$("#setSurveyDiv").hasClass("surveyMenu2Bg")) {
+                    $("#setSurveyDiv").removeClass("surveyMenu2Bg1").addClass("surveyMenu2Bg");
+                }
+                $("#addQuestion").css("display", "none");
+                $("#editQuestion").css("display", "inline");
+                $("#editSurvey").css("display", "none");
+
+
+                //界面刷新
+                if ($("#surveyInfo").hasClass("surveyInfo1")) {
+                    $("#surveyInfo").removeClass("surveyInfo1").addClass("surveyInfo");
+                }
+
+                currentItemClick();
+            });
+
+            //编辑调查问卷层
+            $("#setSurveyDiv").click(function () {
+
+                if ($("#setSurveyDiv").hasClass("surveyMenu2Bg"))
+                    $("#setSurveyDiv").removeClass("surveyMenu2Bg").addClass("surveyMenu2Bg1");
+
+                if (!$("#addQuestionDiv").hasClass("surveyMenu2Bg")) {
+                    $("#addQuestionDiv").removeClass("surveyMenu2Bg1").addClass("surveyMenu2Bg");
+                }
+
+                if (!$("#editQuestionDiv").hasClass("surveyMenu2Bg")) {
+                    $("#editQuestionDiv").removeClass("surveyMenu2Bg1").addClass("surveyMenu2Bg");
+                }
+
+                $("#addQuestion").css("display", "none");
+                $("#editQuestion").css("display", "none");
+                $("#editSurvey").css("display", "inline");
+
+
+                //界面刷新
+                if ($("#surveyInfo").hasClass("surveyInfo")) {
+                    $("#surveyInfo").removeClass("surveyInfo").addClass("surveyInfo1");
+                }
+                //刷新调查项的显示
+                questionClear();
+                //显示调查问卷名称和调查问卷描述
+                $("#iSurveyTitle").html(survey1.surveyInfo.surveyTitle);
+
+                $("#iSurveyLink").html(survey1.surveyInfo.surveyLink);
+            });
+            //调查问卷基本项
+            /*   
+            //单选项基本信息
+            itemRadio1 = new ItemInfo(1000,"请选择",0,0,1000,1,0);
+      
+            aRadio1[0] = new aRadio(1000,1000,0,"选择1",0,0);
+      
+            aRadio1[1] = new aRadio(1001,1000,0,"选择2",0,0);
+      
+            aRadio1[2] = new aRadio(1002,1000,0,"选择3",0,0);     
+       
+            item1[0] = new SurveyItem(itemRadio1,aRadio1);//生成调查项
+     
+            //多选项基本信息
+            itemCheckbox1 = new ItemInfo(1001,"请选择",1,0,1000,1,0); 
+       
+            aCheckbox1[0] = new aCheckbox(1000,1001,0,"选择1",0,0); 
+       
+            aCheckbox1[1] = new aCheckbox(1001,1001,0,"选择2",0,0);
+       
+            aCheckbox1[2] = new aCheckbox(1002,1001,0,"选择3",0,0); 
+       
+            item1[1] = new SurveyItem(itemCheckbox1,aCheckbox1);//生成调查项
+       
+            //文本项基本信息
+            itemText1 = new ItemInfo(1002,"文本题",2,0,1000,1,0);
+       
+            item1[2] = new SurveyItem(itemText1,null);
+            */
+
+
+
+            /***
+            *设置窗口大小
+            *
+            **/
+
+            surveyTemplateSize();
+
+
+            /*var height2 = $("#questionList").height();
+
+            $("#surveyManager").height(height2);
+
+            $("#editQuestion").height(height2 - 2); //设置编辑调查项层的高度
+
+            $("#editSurvey").height(height2 - 2); //设置编辑调查问卷层的高度*/
+
+            /***制作日期：2013年3月28日
+            *问题列表结构
+            */
+
+
+            /**滚动条**/
+
+            var surveyManagerTop = $("#addQuestion").offset().top;
+
+            //var surveyManagerTop1 = $("#editQuestion").offset().top;
+
+            //alert(surveyManagerTop1);
+
+            //var surveyManagerTop2 = $("#editSurvey").offset().top;
+
+            // alert(surveyManagerTop2);
+
+            //alert(top1);
+            var surveyManagerTop1 = $("#editQuestion").offset().top;
+            var surveyManagerTop2 = $("#editSurvey").offset().top;
+            surveyManagerTop1 = surveyManagerTop;
+            surveyManagerTop2 = surveyManagerTop;
+            var surveyManagerLeft;
+
+            var surveyEditLeft = $("#surveyEdit").offset().left;
+
+            surveyManagerLeft = surveyEditLeft; //获得左边浮动的位置
+
+
+
+
+
+            //alert(left1);
+
+            //var sleft1 = $("#surveyManager").scrollLeft();
+
+            //var stop1 = $("#surveyManager").scrollTop();
+
+            //alert(sleft1);
+
+            //alert(stop1);
+
+            window.onload = function () {
+
+                $("#addQuestion").offset({ top: surveyManagerTop, left: surveyEditLeft });
+                $("#editQuestion").offset({ top: surveyManagerTop1, left: surveyEditLeft });
+                $("#editSurvey").offset({ top: surveyManagerTop2, left: surveyEditLeft });
+                //questionList(); //显示问题项
+
+            };
+
+            window.onresize = function () {
+                var surveyManagerSLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+                var surveyManagerSTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+
+
+                if (surveyManagerSTop > surveyManagerTop) {
+
+                    $("#addQuestion").offset({ top: surveyManagerSTop, left: surveyEditLeft });
+                }
+                else {
+                    $("#addQuestion").offset({ top: surveyManagerTop, left: surveyEditLeft });
+                }
+
+                if (surveyManagerSTop > surveyManagerTop1) {
+
+                    $("#editQuestion").offset({ top: surveyManagerSTop, left: surveyEditLeft });
+                }
+                else {
+                    //alert(surveyManagerSTop);
+
+                    $("#editQuestion").offset({ top: surveyManagerTop1, left: surveyEditLeft });
+                }
+            };
+
+
+            window.onscroll = function () {
+
+                var surveyManagerSLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+                var surveyManagerSTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+
+
+                if (surveyManagerSTop > surveyManagerTop) {
+
+                    // if(surveyManagerSTop > 2000)alert(surveyManagerSTop);
+
+                    $("#addQuestion").offset({ top: surveyManagerSTop, left: surveyEditLeft });
+                    //$("#editQuestion").offset({ top: surveyManagerTop, left: surveyEditLeft }); 
+                }
+                else {
+
+
+                    $("#addQuestion").offset({ top: surveyManagerTop, left: surveyEditLeft });
+                    //$("#editQuestion").offset({ top: surveyManagerTop, left: surveyEditLeft });
+                }
+
+                if (surveyManagerSTop > surveyManagerTop1) {
+
+                    //if(surveyManagerSTop > 2000)alert(surveyManagerSTop);
+
+                    $("#editQuestion").offset({ top: surveyManagerSTop, left: surveyEditLeft });
+                }
+                else {
+
+
+
+                    $("#editQuestion").offset({ top: surveyManagerTop1, left: surveyEditLeft });
+                }
+            };
+
+            ///调查问卷更新
+            $("#surveySaveBtn1").click(function () {
+
+                if (user == null) {
+                    location.href = "../index.jsp";
+                }
+
+                surveyN = $("#iSurveyTitle").val();
+
+
+                if (surveyN.trim() == "") {
+                    alert("调查问卷标题不能为空!");
+                    return;
+                }
+
+                surveyP = $("#iSurveyLink").val();
+
+                if (surveyP.trim() == "") {
+
+                    alert("调查问卷备注不能为空!");
+
+                    return;
+                }
+
+                var request1 = $.ajax({ url: "../servlet/SurveyManageAction",
+                    type: "POST",
+                    data: { comType: 9, surveyId: survey1.surveyInfo.surveyId, surveytitle: $("#iSurveyTitle").val(), surveylink: $("#iSurveyLink").val() },
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+
+
+                    if (msg == "success") {
+
+                        getSurvey(); //重新显示调查问卷
+
+                    }
+                    else {
+
+                        alert("调查问卷修改失败!");
+
+                    }
+
+                });
+                request1.fail(function (jqXHR, textStatus) {
+
+                    alert("Request failed: " + textStatus);
+
+                    location.href = "../login.jsp";
+
+
+                });
+
+            });
+            //调查问卷更新
+
+
+        });
+     
+
+	</script>
+	
+    <style type="text/css">
+       .adminbg
+       {
+         width:100%;
+         height:100px;
+         padding:0px;
+         margin-top:0px;
+         margin-left:0px;
+         margin-right:0px;
+         background:url(../image/adminbg3.png) repeat-x;
+         display:inline-block;
+       }
+       body
+       {
+         margin:0px;
+         padding:0px;
+        
+       }
+       .adminM
+       {
+         height:30px;
+         margin-top:59px;
+         margin-left:0px;
+         margin-bottom:0px;
+       }
+       .adminM a
+       {
+
+         font-size:16px;
+         color:#DDDDDD;
+         text-decoration:none;
+       }
+       .adminM a:hover
+       {
+         font-size:16px;
+         color:#FFFFFF;
+         text-decoration:none;
+       }
+       .adminM a:active
+       {
+         font-size:16px;
+         color:#DDDDDD;
+         text-decoration:none;
+       }
+       .adminManager
+       {
+         margin-top:10px;
+         width:100%;
+         display:inline-block;
+       }
+       
+    .foot
+    {
+
+    }
+    .foot a
+    {
+     font-size:13px;
+     color:#696969;
+     text-decoration:none;
+    }
+    
+    .foot a:hover,.foot a:active
+    {
+     font-size:13px;
+     color:#003333;
+     text-decoration:none;
+    }
+    .preview
+    {
+      float:right;
+      width:40px;
+      height:22px;
+      background:url(../image/preview1.png);
+      margin-top:6px;
+      margin-right:12px;
+    }
+    .preview a
+    {
+      font-size:13px;
+      line-height:22px;
+      color:#000000; 
+      text-decoration:none;
+    }
+  
+    .preview:hover
+    {
+      float:right;
+      width:40px;
+      height:22px;
+      background:url(../image/preview2.png);
+      font-size:13px;
+      line-height:22px;
+      margin-top:6px;
+      margin-right:12px;
+      cursor:pointer;
+    }
+    .surveyMenuBg
+    {
+    float:right;
+    padding:0px;
+    height:35px;
+    width:80px;
+    background:url(../image/surveyMenuBg1.png);
+    margin-top:0px;
+    margin-bottom:0px;
+    margin-left:1px;
+    margin-right:5px;
+    cursor:pointer;
+    }
+    .surveyMenuBg a
+    {
+     line-height:35px;
+    font-size:14px;
+    font-weight:bold;
+    font-family:Arial;
+    color:#FFFFFF;  
+    text-decoration:none;
+    }
+    .surveyMenuBg a:hover
+    {
+      line-height:35px;
+      font-size:14px;
+      font-weight:bold;
+      font-family:Arial;
+      color:#333333;
+      text-decoration:none;      
+    }
+    .surveyMenuBg:hover
+    {
+      float:right;
+      padding:0px;
+      height:35px;
+      width:80px;
+      background:url(../image/surveyMenuBg2.png);
+      margin-top:0px;
+      margin-bottom:0px;
+      margin-left:1px;
+      margin-right:5px;  
+      cursor:pointer; 
+    }
+    .surveyMenuBg1
+    {
+      float:right;
+      padding:0px;
+      height:35px;
+      line-height:35px;
+      font-size:14px;
+      font-family:Arial;
+      color:#333333;
+      width:80px;
+      background:url(../image/surveyMenuBg2.png);
+      margin-top:0px;
+      margin-bottom:0px;
+      margin-left:1px;
+      margin-right:5px;  
+      cursor:pointer; 
+    }
+    
+    .surveyMenu2Bg
+    {
+      float:left;
+      margin-left:5px;
+      margin-top:4px;
+      margin-bottom:0px;
+      background:url(../image/arrow_h_1.png) no-repeat;
+      color:#333333;
+      height:24px;
+      width:100px;
+      line-height:24px;
+      font-size:12px; 
+      cursor:pointer;
+    }
+    
+    .surveyMenu2Bg:hover
+    {
+      float:left;
+      margin-left:5px;
+      margin-top:4px;
+      margin-bottom:0px;
+      background:url(../image/arrow_h.png) no-repeat;
+      color:#000000;
+      height:24px;
+      width:100px;
+      line-height:24px;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .surveyMenu2Bg1
+    {
+      float:left;
+      margin-left:5px;
+      margin-top:3px;
+      margin-bottom:0px;
+      border-top:1px solid #3399CC;
+      border-right:1px solid #3399CC;
+      border-left:1px solid #3399CC;
+      border-bottom:1px solid #CCFFFF;
+      background:url(../image/arrow_v.png) no-repeat #CCFFFF;
+      color:#000000;
+      height:24px;
+      width:100px;
+      line-height:24px;
+      font-size:12px;
+      cursor:pointer;
+    }
+    #addQuestion
+    {
+      position:absolute;
+      width:358px;
+      margin:0px;
+      padding:0px;
+      display:inline;
+      z-index:300;
+    }
+    #editQuestion
+    {
+      position:absolute;
+      width:358px;
+      margin:0px;
+      padding:0px;
+      display:none;
+      z-index:300;
+    }
+    #editSurvey
+    {
+      position:absolute;       
+      width:358px;
+      margin:0px;
+      padding:0px;
+      display:none;
+      z-index:300;
+    }
+    #surveyManager
+    {
+    float:left;
+    width:358px;
+    background:#CCFFFF;
+    margin-bottom:0px;
+    margin-top:0px;
+    border-bottom:1px inset #3399CC;
+    border-left:1px outset #3399CC;
+    border-right:1px inset #3399CC;
+    z-index:100;
+    overflow:hidden;
+    }
+
+    #questionList
+    {
+     float:left;
+     width:559px;
+     height:800px;
+     border-right:1px solid #CCCCCC;
+     border-bottom:1px solid #CCCCCC;
+    }
+    
+    .radiobg
+    {
+     float:left;
+     width:120px;
+     height:25px;
+     line-height:25px;
+     font-size:12px;
+     color:#333333;
+     background:url(../image/radiobg1.png);
+     margin-top:10px;
+     margin-left:30px;
+     cursor:pointer;
+    }
+    
+    .radiobg:hover
+    {
+     float:left;
+     width:120px;
+     height:25px;
+     line-height:25px;
+     font-size:12px;
+     color:#333333;
+     background:url(../image/radiobg2.png);
+     margin-top:10px;
+     margin-left:30px;
+     cursor:pointer;
+    }
+    
+    .checkboxbg
+    {
+    float:left;
+    width:120px;
+    height:25px;
+    line-height:25px;
+    font-size:12px;
+    color:#333333;
+    background:url(../image/checkbox1.png);
+    margin-top:10px;
+    margin-left:30px;
+    cursor:pointer;
+    }
+    
+    .checkboxbg:hover
+    {
+    float:left;
+    width:120px;
+    height:25px;
+    line-height:25px;
+    font-size:12px;
+    color:#333333;
+    background:url(../image/checkbox2.png);
+    margin-top:10px;
+    margin-left:30px;
+    cursor:pointer;
+    }
+    
+    .textbg
+    {
+      float:left;
+      width:120px;
+      height:25px;
+      line-height:25px;
+      font-size:12px;
+      color:#333333;
+      background:url(../image/text1.png);
+      margin-top:10px;
+      margin-left:30px;
+      cursor:pointer;
+    }
+    .textbg:hover
+    {
+      float:left;
+      width:120px;
+      height:25px;
+      line-height:25px;
+      font-size:12px;
+      color:#333333;
+      background:url(../image/text2.png);
+      margin-top:10px;
+      margin-left:30px;
+      cursor:pointer;   
+    }
+    
+    #addQTitle
+    {
+      margin-top:10px;
+      margin-bottom:0px;
+      margin-left:32px;
+      padding-left:32px;
+      font-family:Arial;
+      width:324px;
+      height:30px;
+      line-height:30px;
+      font-size:13px;
+      color:#FF6600;
+    }
+    
+    .surveyInfo
+    {
+        margin-top:10px;
+        width:539px;
+        margin-left:10px;
+        border-bottom:1px dotted #222222;   
+        cursor:pointer;
+        display:inline-block
+    }
+    
+    .surveyInfo1
+    {
+        margin-top:10px;
+        width:539px;
+        margin-left:10px;
+        background:#CCFFFF;
+        border:1px solid #99CC00;
+        cursor:pointer;
+        display:inline-block
+    }
+    
+    .surveyItem
+    {
+        margin-top:10px;
+        width:539px;
+        margin-left:10px;
+        cursor:pointer; 
+    }
+    
+    .surveyItem:hover
+    {
+        margin-top:10px;
+        width:539px;
+        margin-left:10px;
+        border:1px dotted #222222;   
+        cursor:pointer; 
+    }
+    
+    .surveyItem1
+    {
+        margin-top:10px;
+        width:539px;
+        margin-left:10px;
+        background:#CCFFFF;
+        border:1px dotted #99CC00;
+        cursor:pointer;  
+    }
+    #itemAddBtn
+    {
+        float:left;
+        height:30px;
+        line-height:30px;
+        font-size:12px;
+        margin:10px;
+        width:80px; 
+        cursor:pointer;
+        background:url(../image/itemAdd.png);
+ 
+    }
+    
+    #itemAddBtn:hover
+    {
+        float:left;
+        height:32px;
+        line-height:32px;
+        font-size:12px;
+        margin:10px;
+        width:82px; 
+        cursor:pointer;
+        border:1px dotted #000000;
+        background:url(../image/itemAdd.png); 
+    }
+    
+    #itemDeleteBtn
+    {
+        float:left;
+        height:30px;
+        line-height:30px;
+        font-size:12px;
+        margin:10px;
+        width:80px; 
+        cursor:pointer;
+        background:url(../image/itemDelete1.png);
+     
+    }
+     #itemDeleteBtn:hover
+    {
+        float:left;
+        height:30px;
+        line-height:30px;
+        font-size:12px;
+        margin:10px;
+        width:80px; 
+        cursor:pointer;
+        border:1px dotted #000000;
+        background:url(../image/itemDelete1.png);
+     
+    }
+    #itemUpdateBtn
+    {
+        float:left;
+        height:30px;
+        line-height:30px;
+        margin:10px;
+        font-size:12px;
+        width:80px; 
+        cursor:pointer;
+        background:url(../image/itemUpdate.png);
+
+    }
+     #itemUpdateBtn:hover
+    {
+        float:left;
+        height:30px;
+        line-height:30px;
+        margin:10px;
+        font-size:12px;
+        width:80px; 
+        cursor:pointer;
+        border:1px dotted #000000;        
+        background:url(../image/itemUpdate.png);
+
+    }
+   
+    </style>
+</head>
+<body>
+      <div id="adminMain" style="width:100%;">
+         <div class="adminbg" align="center">
+            <div style="float:left;margin-left:50px;width:300px;height:82px;margin-top:4px;">
+              <img src="../image/adminlogo.png" />
+            </div>
+            <div style="float:left;height:99px;width:600px;">
+              <div class="adminM">
+               <span><a href="index.html"><b>&nbsp;首页&nbsp;</b></a></span>
+               <span><a href="surveylist.html"><b>&nbsp;调查问卷管理&nbsp;</b></a></span>
+               <span><a href="userlist.html"><b>&nbsp;普通用户管理&nbsp;</b></a></span>
+               <span><a href="visitorlist.html"><b>&nbsp;访问者管理&nbsp;</b></a></span>
+              </div> 
+            </div>
+            <div style="float:right;height:64px;margin-right:70px;margin-top:25px;">
+              <div id="userInfo" style="float:left;background:url(../image/adminName.png);width:160px;height:26px;color:#ffffff;font-size:12px;line-height:24px;">
+                  usercheck...
+              </div>
+              <div style="float:left;">&nbsp;</div>
+              <div id='exitBtn' style="float:left;background:url(../image/adminQuit.png);width:40px;height:26px;color:#ffffff;font-size:12px;line-height:24px;cursor:pointer;">
+                                                退出
+              </div>
+            </div>
+         </div>
+       
+         <div id="adminManager" class="adminManager" align="center">
+         <!-----------------调查问卷编辑主要界面 ------------------>
+          <div id="surveyEdit" style="width:920px;">
+            <div id="surveyTitle" style="width:920px;height:35px;background:#CC6633;">
+                  <div style="float:left;color:#FFFFFF;font-size:17px;font-family:Arial;line-height:35px;margin-left:10px;">
+                    <b>第一个调查问卷系统</b>
+                   </div>
+
+                   <div class="surveyMenuBg" id="surveyResultBtn">
+                      <b>统计分析</b>
+                   </div>
+                                      
+                   <div class="surveyMenuBg1">
+                      <b>设计问卷</b>
+                   </div>
+
+                   <div class="preview" id="previewBtn">
+                         预览
+                   </div>
+            </div>
+            
+            <!-- 第二层按钮 -->
+            <div id="surveyMenu" style="width:920px;height:28px;background:#FFCA95;">
+               <div style="float:left;width:359px;height:28px;border-bottom:1px inset #3399CC;" align="center">
+               
+                 <div id="addQuestionDiv" class="surveyMenu2Bg1">
+                                                 新增问题
+                 </div>
+                 <div id="editQuestionDiv" class="surveyMenu2Bg">
+                                                 编辑问题
+                 </div>
+                 <div id="setSurveyDiv" class="surveyMenu2Bg">
+                                                问卷设置
+                 </div>
+                 
+               </div>
+               
+               <div style="float:left;width:560px;height:28px;border-bottom:1px inset #FF6600">
+               </div>
+            </div>
+            
+            <!-- 添加删除主界面 -->
+            <div id="surveyMain">
+
+               <div id="surveyManager">
+               
+                 <div id="addQuestion">
+                   <div id="addQTitle" align="left">基本题型</div>
+                   <div style="width:356px;">
+                      <div id="addRadio" class="radiobg">单选问题项</div>
+                      <div id="addCheckbox" class="checkboxbg">多选问题项</div>
+                   </div>
+                   <div style="width:356px;">
+                      <div id="addText" class="textbg">文本问题项</div>
+                  </div>
+                 </div>
+
+                 <div id="editQuestion">
+                    <div style="margin-top:10px;color:#333333;font-size:14px;margin-left:20px;">
+                       <span id="questionIndexSpan"></span>
+                       <span style="margin-left:10px;">题目内容</span>
+                       <span><img src="../image/icn_question.gif" alt="修改调查问卷名称" /></span>
+                     </div>
+
+                      <div style="margin-top:10px;">
+                        <textarea name="iItemCaption" id="iItemCaption" cols="30" rows="4"></textarea>
+                      </div>
+
+                     <div id="answerItemTitle" style="margin-top:10px;color:#333333;font-size:14px;margin-left:20px;">
+                       <span id="Span1"></span>
+                       <span style="margin-left:10px;">题目选项</span>
+                       <span><img src="../image/icn_question.gif" alt="修改调查问卷名称" /></span>
+                     </div>
+
+                      <div id="answerListDiv"></div>
+                      <div align="center" style="width:320px;">
+                         <div id="itemAddBtn"><span style="margin-left:10px;">添加项</span></div>
+                         <div id="itemDeleteBtn"><span style="margin-left:10px;">删除项</span></div>
+                         <div id="itemUpdateBtn"><span style="margin-left:10px;">保存项</span></div>
+                      </div>
+                 </div>
+
+                 <div id="editSurvey">
+
+                     <div style="margin-top:10px;color:#333333;font-size:14px;margin-left:20px;">
+                       <span>问卷名称</span>
+                       <span><img src="../image/icn_question.gif" alt="修改调查问卷名称" /></span>
+                     </div>
+
+                     <div style="margin-top:10px;">
+                        <textarea name="iSurveyTitle" id="iSurveyTitle" cols="30" rows="4"></textarea>
+                      </div>
+
+                     <div style="margin-top:10px;color:#333333;font-size:14px;margin-left:20px;">
+                       <span>问卷描述</span>
+                       <span><img src="../image/icn_question.gif" alt="修改调查问卷描述" /></span>
+                     </div>
+
+                     <div style="margin-top:10px;">
+                        <textarea name="iSurveyLink" id="iSurveyLink" cols="30" rows="4"></textarea>
+                     </div>
+                     <div id="surveySaveBtn1" style="cursor:pointer;margin-top:20px;margin-left:120px;"><img src="../image/save1.png" alt="保存" /></div>
+                      <!----编辑调查问卷基本信息---->
+
+                 </div>
+
+               </div>
+
+
+
+              
+               <div id="questionList">
+                  <div id="surveyInfo" align="left" class="surveyInfo">
+                     
+                  </div>
+                  <div id="questionListDiv" style="display:inline-block">
+                  </div>
+               </div>
+            </div>
+          </div>
+         <!-----------------调查问卷编辑主要界面 ------------------>
+         </div>
+         
+         
+         <div id="adminFooter" align="center" class="foot">
+           <div style="width:920px;line-height:29px;margin-top:10px;height:30px;border-top:1px dotted black;" align="left">
+          
+              <span><a href="../help.html">购买系统</a></span>
+              <span><a href="../help.html">客户合作</a></span>
+              <span><a href="../help.html">技术支持</a></span>
+              <span><a href="../help.html">关于我们</a></span>
+            
+           </div>
+           
+           <div style="width:920px;height:16px;border-top:1px dotted black;">
+                        <a href="../help.html">版权所有&copy;然然工作室</a>
+           </div>
+           <!-- ajax test  -->
+           <div id="log"></div>
+           <!-- ajax test  -->
+         </div>
+      </div>
+ 
+</body>
+</html>
+

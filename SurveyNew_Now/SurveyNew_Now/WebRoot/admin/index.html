@@ -1,0 +1,927 @@
+﻿<html>
+  <head>
+    <title>index.html</title>
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="../JS/css/start/jquery-ui.css" rel="stylesheet">
+	<script src="../JS/js/jquery-1.9.1.js"></script>
+	<script src="../JS/js/jquery-ui-1.10.2.custom.js"></script>
+	<script type="text/javascript">
+		
+
+		
+		$(function(){
+		
+		String.prototype.trim = function() { 
+              return this.replace(/^\s\s*/, '').replace(/\s\s*$/, ''); 
+        } 
+
+		  
+		  //用户类型
+		  var user = null;//用户信息的记录者	
+		  
+		  //获取调查问卷列表
+		  function getSurveyListTen()
+		  {
+		    //获得后台数据
+            $("#surveyListTen").html("<a href='index.html'>调查问卷正在加载...</a>");
+            
+             var request = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data:{comType:1},
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+                
+                    if(msg == "usererror")
+                    {
+                      location.href="../login.jsp";
+                    }
+                    else
+                    {
+                      $("#surveyListTen").html(msg);
+                    }
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+		  }
+		  
+		  getSurveyListTen();//获得调查问卷最新十个
+		  
+		  //获取用户列表
+		  function getUserListTen()
+		  {
+		    //获得后台数据
+            $("#userListTen").html("<a href='index.html'>调查问卷正在加载...</a>");
+            
+             var request1 = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data:{comType:2},
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+                
+                    if(msg == "usererror")
+                    {
+                      location.href="../login.jsp";
+                    }
+                    else
+                    {
+                      $("#userListTen").html(msg);
+                    }
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+		  }
+		  
+		  getUserListTen();//获得用户列表
+		  
+		  //获得用户信息
+		  function getUserInfo()
+		  {
+		    //获得后台数据
+            $("#userInfo").html("user check...");
+            
+             var request1 = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data:{comType:3},
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+                
+                    if(msg == "usererror")
+                    {
+                      location.href="../login.jsp";
+                    }
+                    else
+                    {
+                      user = jQuery.parseJSON(msg);//获得用户数据
+                      
+                      //更新用户管理层数据
+                      $("#userNameU").val(user.userName);
+                      
+                      $("#userInfo").html(user.userName);//显示用户姓名
+                      
+                      $("#userID").html("<div style='margin-left:10px;'>" + "管理员编号：" + user.userID + "</div>");
+                      
+                      $("#userName").html("<div style='margin-left:10px;'>" + "管理员姓名：" + user.userName + "</div>");
+                      
+                      typeS = user.userType == 1?"系统管理员":"普通管理员";
+                      
+                      $("#userType").html("<div style='margin-left:10px;'>" + "管理员类型：" + typeS + "</div>");
+                      
+                      today=new Date();
+                      
+                      year1 = today.getFullYear();
+                      month1 = today.getMonth() + 1;
+                      day1 = today.getDate();
+                      hour1 = today.getHours();
+                      minute1 = today.getMinutes();
+                      second1 = today.getSeconds();
+                      
+                      loginTime = year1 + "-" + month1 + "-" + day1;
+                      
+                      loginTime += " ";
+                      
+                      loginTime += hour1 + ":" + minute1 + ":" + second1;
+                      
+                      $("#currentTime").html("<div style='margin-left:10px;'>本次登录时间：" + loginTime + "</div>");
+
+                    }
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });		  
+		  }
+		  
+		  getUserInfo();//获得用户信息
+		  
+		  //退出按钮
+		  $("#exitBtn").click(function(){
+		  
+             var request1 = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data:{comType:4},
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+                
+                     if(msg == "loginout")
+                     {
+                        location.href="../index.jsp";
+                     }
+                     else
+                     {
+                        location.href="../login.jsp";
+                     }
+                      
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                
+                    alert("Request failed: " + textStatus);
+                    
+                    location.href = "../login.jsp";
+                    
+                    
+                });		  		     
+		     
+		  });
+		  //用户修改
+	   function userManagerHidden()
+       {
+         $("#userManager").css("display","none");
+       }
+     
+       function userManagerShow()
+       {
+         $("#userManager").css("display","inline");
+       }
+       
+       $("#updateUser").click(function(){
+           
+           userManagerShow();//显示修改窗口
+           
+           $("#userManager").offset({ top:$("#adminManager").offset().top , left:$("#adminManager").offset().left + 300});
+       
+       });
+       
+       $("#userCloseBtn").click(function(){
+         userManagerHidden();
+       });
+       
+       $("#userCloseBtn1").click(function(){
+         userManager1Hidden();
+     });
+
+     $("#userCloseBtn2").click(function () {
+         userManager2Hidden();
+     });
+       
+       //请求修改用户信息
+       $("#userSaveBtn").click(function(){
+                    
+                 	if(user == null)
+                 	{
+                    	 location.href="../index.jsp";
+                 	}
+                 	
+                    userN = $("#userNameU").val();
+                 	
+                    
+                    if(userN.trim() == "")
+                    {
+                      alert("用户名不能为空!");
+                      return ;
+                    }
+                    
+                    userP = $("#userPassU").val();
+                    
+                    if(userP.trim() == "")
+                    {
+                      alert("用户密码不能为空!");   
+                      
+                      return ;                 
+                    }
+                    
+                    userP1 = $("#userPassU").val();
+                                        
+                    if(userP1.trim() == "")
+                    {
+                      alert("用户密码不能为空!");   
+                      
+                      return ;                 
+                    }
+                    
+                    if($("#userPassU").val() != $("#userPassU1").val())
+                    {
+                      alert("密码两次输入不相同!");   
+                      
+                      return ;                           
+                    }                   
+                    
+                    var request1 = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data:{comType:5,userid:user.userID,username:$("#userNameU").val(),userpassword:$("#userPassU").val(),usertype:user.userType},
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+                
+                     
+                     if(msg == "success")
+                     {
+                        getUserInfo();
+                        
+                        $("#userNameU").val("");
+                        
+                        $("#userPassU").val("");
+                        
+                        $("#userPassU1").val("");
+                        
+                        userManagerHidden();
+                        
+                     }
+                     else
+                     {
+                        alert("用户信息更新失败!");
+                     }
+                      
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                
+                    alert("Request failed: " + textStatus);
+                    
+                    location.href = "../login.jsp";
+                    
+                    
+                });		  		     
+       });
+       
+       
+          $("#userSaveBtn1").click(function(){
+                    
+                 	if(user == null)
+                 	{
+                    	 location.href="../index.jsp";
+                 	}
+                 	
+                    userN = $("#userNameU1").val();
+                 	
+                    
+                    if(userN.trim() == "")
+                    {
+                      alert("用户名不能为空!");
+                      return ;
+                    }
+                    
+                    userP = $("#userPassU2").val();
+                    
+                    if(userP.trim() == "")
+                    {
+                      alert("用户密码不能为空!");   
+                      
+                      return ;                 
+                    }        
+                    
+                    var request1 = $.ajax({ url: "../servlet/UserManageAction",
+                    type: "POST",
+                    data:{comType:6,userid:$("#userId1").val(),username:$("#userNameU1").val(),userpassword:$("#userPassU2").val(),usertype:0},
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+                
+                     
+                     if(msg == "success")
+                     {
+		                getUserListTen();
+		                
+		                $("#userNameU1").val("");
+		                
+		                $("#userPassU2").val("");
+		                
+		                $("#userId1").val("");
+                        
+                        userManager1Hidden();
+                        
+                     }
+                     else
+                     {
+                        alert("用户信息更新失败!");
+                     }
+                      
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                
+                    alert("Request failed: " + textStatus);
+                    
+                    location.href = "../login.jsp";
+                    
+                    
+                });		
+                
+            });          
+		  
+		});
+		
+		
+	
+	
+			  //获取调查问卷列表
+		  function getSurveyListTen()
+		  {
+		    //获得后台数据
+            $("#surveyListTen").html("<a href='index.html'>调查问卷正在加载...</a>");
+            
+             var request = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data:{comType:1},
+                    dataType: "html"
+                });
+
+                request.done(function (msg) {
+                
+                    if(msg == "usererror")
+                    {
+                      location.href="../login.jsp";
+                    }
+                    else
+                    {
+                      $("#surveyListTen").html(msg);
+                    }
+                });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+		  }
+		  
+	   //根据调查问卷编号删除调查问卷
+       function deleteSurveyDataById(surveyNum)
+       {
+                  var request2 = $.ajax({ url: "../servlet/SurveyManageAction",
+                   				 type: "POST",
+                 			   	 data:{comType:5,surveyId:surveyNum},
+                  			  	 dataType: "html"
+              		  });
+
+ 		    request2.done(function (msg) {
+ 				                 $("#surveyListTen").append(msg);
+ 		              });
+
+ 		    request2.fail(function (jqXHR, textStatus) {
+ 				                  alert("Request failed: " + textStatus);
+	                  });
+ 		}
+
+        //调查问卷编辑
+       function updateSurveyDataById(surveyNum) {
+           var request2 = $.ajax({ url: "../servlet/SurveyManageAction",
+               type: "POST",
+               data: { comType: 7, surveyId: surveyNum },
+               dataType: "html"
+           });
+
+           request2.done(function (msg) {
+
+               if (msg == "success") {
+                   location = "surveyedit.html"; //调查问卷编辑页
+               }
+               else {
+                   location = "../login.jsp"; //回到登录页
+               }
+
+           });
+
+           request2.fail(function (jqXHR, textStatus) {
+               alert("Request failed: " + textStatus);
+           });
+       }
+          
+		  
+		  //获取用户列表
+		  function getUserListTen()
+		  {
+		    //获得后台数据
+            $("#userListTen").html("<a href='index.html'>调查问卷正在加载...</a>");
+            
+             var request1 = $.ajax({ url: "../servlet/AdminIndexAction",
+                    type: "POST",
+                    data:{comType:2},
+                    dataType: "html"
+                });
+
+                request1.done(function (msg) {
+                
+                    if(msg == "usererror")
+                    {
+                      location.href="../login.jsp";
+                    }
+                    else
+                    {
+                      $("#userListTen").html(msg);
+                    }
+                });
+
+                request1.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+		  }	
+		  
+	//根据普通管理员编号删除管理员信息
+     function deleteUserDataById(userNum)
+     {
+                  var request2 = $.ajax({ url: "../servlet/UserManageAction",
+                   				 type: "POST",
+                 			   	 data:{comType:7,userId:userNum},
+                  			  	 dataType: "html"
+              		  });
+
+ 		    request2.done(function (msg) {
+ 				                 $("#userListTen").append(msg);
+ 		              });
+
+ 		    request2.fail(function (jqXHR, textStatus) {
+ 				                  alert("Request failed: " + textStatus);
+	                  });
+     }
+     
+           //用户修改
+	   function userManager1Hidden()
+       {
+         $("#userManager1").css("display","none");
+       }
+     
+       function userManager1Show()
+       {
+         $("#userManager1").css("display","inline");
+      }
+
+      //用户查看
+      function userManager2Hidden() {
+          $("#userManager2").css("display", "none");
+      }
+
+      function userManager2Show() {
+          $("#userManager2").css("display", "inline");
+      }
+
+       //根据普通管理员编号获得管理员查看信息
+       function getUserDataById1(userNum) {
+           var request2 = $.ajax({ url: "../servlet/UserManageAction",
+               type: "POST",
+               data: { comType: 8, userId: userNum },
+               dataType: "html"
+           });
+
+           request2.done(function (msg) {
+               $("#viewUserInfo").html(msg);//添加返回内容
+               userManager2Show(); //显示修改窗口
+               $("#userManager2").offset({ top: $("#userListTen").offset().top, left: $("#userListTen").offset().left + 100 });
+           });
+
+           request2.fail(function (jqXHR, textStatus) {
+               alert("Request failed: " + textStatus);
+           });
+       }
+     //根据普通管理员编号获得管理员信息
+     function getUserDataById(userNum)
+     {
+                  var request2 = $.ajax({ url: "../servlet/UserManageAction",
+                   				 type: "POST",
+                 			   	 data:{comType:3,userId:userNum},
+                  			  	 dataType: "html"
+              		  });
+
+ 		    request2.done(function (msg) {
+ 				    if(msg == "usererror")
+                    {
+                      location.href="../login.jsp";
+                    }
+                    else
+                    {
+                      user = jQuery.parseJSON(msg);//获得用户数据
+                      
+                      //更新用户管理层数据
+                      $("#userNameU1").val(user.userName);
+                      
+                      $("#userPassU2").val(user.userPass);//显示用户姓名
+                      
+                      $("#userId1").val(user.userID);//用户编号
+                      
+                      userManager1Show();//显示修改窗口
+           
+                      $("#userManager1").offset({ top:$("#userListTen").offset().top , left:$("#userListTen").offset().left + 100});
+                    }
+ 		              });
+
+ 		             request2.fail(function (jqXHR, textStatus) {
+ 				                  alert("Request failed: " + textStatus);
+	                  });
+     }
+
+    </script>
+    <style type="text/css">
+       .adminbg
+       {
+         width:100%;
+         height:100px;
+         padding:0px;
+         margin-top:0px;
+         margin-left:0px;
+         margin-right:0px;
+         background:url(../image/adminbg3.png) repeat-x;
+         display:inline-block;
+       }
+       body
+       {
+         margin:0px;
+         padding:0px;
+        
+       }
+       .adminM
+       {
+         height:30px;
+         margin-top:59px;
+         margin-left:0px;
+         margin-bottom:0px;
+       }
+       .adminM a
+       {
+
+         font-size:16px;
+         color:#DDDDDD;
+         text-decoration:none;
+       }
+       .adminM a:hover
+       {
+         font-size:16px;
+         color:#FFFFFF;
+         text-decoration:none;
+       }
+       .adminM a:active
+       {
+         font-size:16px;
+         color:#DDDDDD;
+         text-decoration:none;
+       }
+       .adminManager
+       {
+         margin-top:10px;
+         width:100%;
+         display:inline-block;
+       }
+       
+    .foot
+    {
+
+    }
+    .foot a
+    {
+     font-size:13px;
+     color:#696969;
+     text-decoration:none;
+    }
+    
+    .foot a:hover,.foot a:active
+    {
+     font-size:13px;
+     color:#003333;
+     text-decoration:none;
+    }
+    .infoDiv
+    {
+       float:left;
+       width:360px;
+       height:240px;
+       color:#009966;
+       font-size:13px;    
+    }
+    .infoDiv a
+    {
+       color:#009966;
+       font-size:13px;
+       text-decoration:none;      
+           
+    }
+    
+    .infoDiv a:hover,.infoDiv a:active
+    {
+       color:red;
+       font-size:13px;
+       text-decoration:none;      
+    }
+    #surveyListTen
+    {
+      width:498px;
+      height:358px;
+      color:#009966;
+      font-size:12px;
+    }
+    
+    #surveyListTen a
+    {
+      color:#009966;
+      font-size:12px;
+      text-decoration:none;
+    }
+    
+    #surveyListTen a:hover,#surveyListTen a:active
+    {
+      color:red;
+      font-size:12px;
+      text-decoration:none;   
+    }
+    
+    #userListTen
+    {
+      width:498px;
+      height:358px;
+      color:#009966;
+      font-size:12px;
+    }
+    
+    #userListTen a
+    {
+      color:#009966;
+      font-size:12px;
+      text-decoration:none;
+    }
+    
+    #userListTen a:hover,#userListTen a:active
+    {
+      color:red;
+      font-size:12px;
+      text-decoration:none;   
+    }
+    
+    .tableClass
+    {
+      color:#009966;
+      font-size:13px;
+      width:498px;
+    }
+    
+    .tdHeader
+    {
+      background:#CCCCFF;
+      font-weight:bold;
+      height:30px;
+      border-bottom:1px solid #336699;
+    }
+    
+    .trContent
+    {
+      background:#FFFFFF;
+    }
+    .trContent:hover
+    {
+      background:#FFFF99;
+    }
+    .tdContent
+    {
+      height:33px;
+      border-bottom:1px solid #336699;
+    }
+    
+    #userManager
+    {
+       display:none;
+       background:white;
+       font-size:12px;
+       color:#0099CC;
+       font-size:12px;
+       width:400px;
+       height:300px;
+       float:left;
+       border:1px solid #0099CC;
+       overflow:hidden;
+    }
+    
+    #userManager input
+    {
+      width:160px;
+      height:30px;
+      border:1px solid #0099CC;
+    }
+    
+    #userManager1
+    {
+       display:none;
+       background:white;
+       font-size:12px;
+       color:#0099CC;
+       font-size:12px;
+       width:400px;
+       height:300px;
+       float:left;
+       border:1px solid #0099CC;
+       overflow:hidden;
+    }
+    
+    #userManager1 input
+    {
+      width:160px;
+      height:30px;
+      border:1px solid #0099CC;
+    }
+    
+    
+    #userManager2
+    {
+       display:none;
+       background:white;
+       font-size:12px;
+       color:#0099CC;
+       font-size:12px;
+       width:400px;
+       height:300px;
+       float:left;
+       border:1px solid #0099CC;
+       overflow:hidden;
+    }	
+    	
+    </style>
+  </head>
+  
+  <body>
+     <div id="adminMain" style="width:100%;">
+         <div class="adminbg" align="center">
+            <div style="float:left;margin-left:50px;width:300px;height:82px;margin-top:4px;">
+              <img src="../image/adminlogo.png" />
+            </div>
+            <div style="float:left;height:99px;width:600px;">
+              <div class="adminM">
+               <span><a href="index.html"><b><font color="#FFFFFF">&nbsp;首页&nbsp;</font></b></a></span>
+               <span><a href="surveylist.html"><b>&nbsp;调查问卷管理&nbsp;</b></a></span>
+               <span><a href="userlist.html"><b>&nbsp;普通用户管理&nbsp;</b></a></span>
+               <span><a href="visitorlist.html"><b>&nbsp;访问者管理&nbsp;</b></a></span>
+              </div> 
+            </div>
+            <div style="float:right;height:64px;margin-right:70px;margin-top:25px;">
+              <div id="userInfo" style="float:left;background:url(../image/adminName.png);width:160px;height:26px;color:#ffffff;font-size:12px;line-height:24px;">
+                  usercheck...
+              </div>
+              <div style="float:left;">&nbsp;</div>
+              <div id='exitBtn' style="float:left;background:url(../image/adminQuit.png);width:40px;height:26px;color:#ffffff;font-size:12px;line-height:24px;cursor:pointer;">
+                                                退出
+              </div>
+            </div>
+         </div>
+       
+         <div id="adminManager" class="adminManager" align="center">
+          <div style="width:920px;">
+           <div style="float:left;width:520px;">
+             <div style="width:500px;height:400px;background:url(../image/adminCN1.png) no-repeat;">
+             	<div style="width:498px;height:40px;padding-left:60px;color:#FFFFFF;font-size:18px;font-weight:bold;" align='left'>
+             		<div style="float:left;line-height:40px;height:40px;width:120px;">最新调查问卷</div>
+             		<div style="margin-left:240px;float:left;width:60px;height:40px;"><img src="../image/pity.png" alt="问卷管理面板" /></div>
+             	</div>
+             	<div id="surveyListTen"></div>
+             </div>
+             <div style="margin-top:10px;width:500px;height:400px;background:url(../image/adminCN1.png) no-repeat;">
+             	<div style="width:498px;height:40px;padding-left:60px;line-height:40px;color:#FFFFFF;font-size:18px;font-weight:bold;" align='left'>
+             		<div style="float:left;line-height:40px;height:40px;width:120px;">最新添加用户</div>
+             		<div style="margin-left:240px;float:left;width:60px;height:40px;"><img src="../image/pity.png" alt="问卷管理面板" /></div>
+             	</div>
+             	<div id="userListTen"></div>
+             </div>
+           </div>
+           <div style="float:right;width:400px;">
+           	
+             <div id="adminInfo" style="width:360px;height:280px;background:url(../image/adminCN2.png) no-repeat;">
+                <div align="left" style="width:360px;line-height:40px;height:40px;padding-left:10px;color:#FFFFFF;font-size:17px;font-weight:bold;">用户基本信息</div>
+                <div id="adminManager1" style="float:left;width:208px;height:180px;color:#009966;font-size:13px;">
+                	<div id="userID" style="width:208px;height:40px;line-height:40px;" align="left"></div>
+                	<div id="userName" style="width:208px;height:40px;line-height:40px;" align="left"></div>
+                	<div id="userType" style="width:208px;height:40px;line-height:40px;" align="left"></div>
+                	<div id="currentTime" style="width:208px;height:40px;line-height:40px;" align="left"></div>
+                </div>
+                <div style="float:left;width:150px;height:180px;">
+                	<div style="padding-left:25px;padding-top:20px;"><img src="../image/admin.png" alt="管理员" /></div>	
+                </div>
+                <div style="width:358px;height:60px;">
+                	<div style="float:right;margin-right:20px;cursor:pointer;"  id="updateUser"><img src="../image/updateUserInfo.png" ></div>
+                </div>
+             </div>
+             
+             <div style="margin-top:10px;width:360px;height:280px;background:url(../image/adminCN3.png) no-repeat;">
+             	 <div align="left" style="width:360px;line-height:40px;height:40px;padding-left:10px;color:#FFFFFF;font-size:17px;font-weight:bold;">常见问题</div>
+                 <div align="left" class="infoDiv">   
+                	<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game1.swf"><span style="margin-left:10px;">穿过窟窿智力游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+               		<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game2.swf"><span style="margin-left:10px;">中国军旗智力游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+                	<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game3.swf"><span style="margin-left:10px;">小猴泡泡球小游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+                	<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game4.swf"><span style="margin-left:10px;">射击打枪类小游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+                	<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game4.swf"><span style="margin-left:10px;">射击打枪类小游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+                 </div>                	 
+             </div> 
+             
+             <div style="margin-top:10px;width:360px;height:280px;background:url(../image/adminCN3.png) no-repeat;">
+                 <div align="left" style="width:360px;line-height:40px;height:40px;padding-left:10px;color:#FFFFFF;font-size:17px;font-weight:bold;">娱乐中心</div>  
+                 <div align="left" class="infoDiv">    
+                	<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game1.swf"><span style="margin-left:10px;">穿过窟窿智力游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+               		<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game2.swf"><span style="margin-left:10px;">中国军旗智力游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+                	<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game3.swf"><span style="margin-left:10px;">小猴泡泡球小游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+                	<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game4.swf"><span style="margin-left:10px;">射击打枪类小游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>
+                	<div style="height:40px;line-height:40px;margin-left:20px;"><a href="../flash/game4.swf"><span style="margin-left:10px;">射击打枪类小游戏智力游戏</span><span style="margin-left:30px;">2013-04-05</span></a></div>                 
+                   
+                 </div>    	
+             </div>
+             
+             <div style="margin-top:10px;width:360px;height:200px;background:url(../image/adminCN4.png) no-repeat;">
+                 <div align="left" style="width:360px;line-height:40px;height:40px;padding-left:10px;color:#FFFFFF;font-size:17px;font-weight:bold;">联系我们</div>   
+                 <div align="left" style="float:left;width:360px;height:160px;color:#009966;font-size:13px;"> 
+                     <div style="height:30px;line-height:30px;margin-left:20px;margin-top:10px;"><span style="margin-left:10px;">QQ:</span><span style="margin-left:30px;"><img src="../image/qqbtn.gif" /></span></div>   
+                     <div style="height:30px;line-height:30px;margin-left:20px;"><span style="margin-left:10px;">旺旺:</span><span style="margin-left:30px;"><img src="../image/wangwang.gif" /></span></div>
+                     <div style="height:30px;line-height:30px;margin-left:20px;"><span style="margin-left:10px;">msn:</span><span style="margin-left:30px;">xinxing@hotmail.com</span></div>
+                     <div style="height:30px;line-height:30px;margin-left:20px;"><span style="margin-left:10px;">邮箱:</span><span style="margin-left:30px;">xinxing@gmail.com</span></div>                                                               
+                 </div>            	
+             </div>      
+                   
+           </div>
+          </div>
+         </div>
+         
+         
+         <div id="adminFooter" align="center" class="foot">
+           <div style="width:920px;line-height:29px;margin-top:30px;height:30px;border-top:1px dotted black;" align="left">
+          
+              <span><a href="../help.html">购买系统</a></span>
+              <span><a href="../help.html">客户合作</a></span>
+              <span><a href="../help.html">技术支持</a></span>
+              <span><a href="../help.html">关于我们</a></span>
+            
+           </div>
+           
+           <div style="width:920px;height:16px;border-top:1px dotted black;">
+                        <a href="../help.html">版权所有&copy;然然工作室</a>
+           </div>
+         </div>
+      </div>
+      <!--修改管理员密码-->
+      <div id = "userManager">
+      	<div style="width:400px;line-height:40px;height:40px;font-size:16px;color:#FFFFFF;font-weight:bold;background:#0099CC;"><span style="margin-left:20px;">用户修改</span></div>
+      	<div style="width:400px;height:60px;margin-top:10px;"><span style="margin-left:40px;">用户名：</span><span style="margin-left:40px;"><input type="text" name="userNameU" id="userNameU" /></span></div>
+      	<div style="width:400px;height:60px;"><span style="margin-left:40px;">新密码：</span><span style="margin-left:40px;"><input type="password" name="userPassU" id="userPassU" /></span></div>
+      	<div style="width:400px;height:60px;"><span style="margin-left:40px;">确认密码：</span><span style="margin-left:30px;"><input type="password" name="userPassU1" id="userPassU1" /></span></div>
+      	<div style="width:400px;height:60px;">
+      	    <div id="userCloseBtn" style="float:right;cursor:pointer;margin-right:40px;"><img src="../image/save2.png" alt="关闭" /></div>
+      		<div id="userSaveBtn" style="float:right;cursor:pointer;margin-right:10px;"><img src="../image/save1.png" alt="保存" /></div>
+      	</div>
+      </div>
+      
+      <!--修改普通管理员信息-->
+      <div id = "userManager1">
+      	<div style="width:400px;line-height:40px;height:40px;font-size:16px;color:#FFFFFF;font-weight:bold;background:#0099CC;"><span style="margin-left:20px;">修改管理员</span></div>
+      	<div style="width:400px;height:60px;margin-top:10px;"><span style="margin-left:40px;">用户名：</span><span style="margin-left:40px;"><input type="text" name="userNameU1" id="userNameU1" /></span></div>
+      	<div style="width:400px;height:60px;"><span style="margin-left:40px;">新密码：</span><span style="margin-left:40px;"><input type="text" name="userPassU2" id="userPassU2" /></span></div>
+      	<div style="width:400px;height:60px;"><span style="margin-left:40px;"></span><span style="margin-left:30px;"><input type="hidden" name="userId1" id="userId1" /></span></div>
+      	<div style="width:400px;height:60px;">
+      	    <div id="userCloseBtn1" style="float:right;cursor:pointer;margin-right:40px;"><img src="../image/save2.png" alt="关闭" /></div>
+      		<div id="userSaveBtn1" style="float:right;cursor:pointer;margin-right:10px;"><img src="../image/save1.png" alt="保存" /></div>
+      	</div>
+      </div>      	
+      
+     <div id = "userManager2">
+      	<div style="width:400px;line-height:40px;height:40px;font-size:16px;color:#FFFFFF;font-weight:bold;background:#0099CC;"><span style="margin-left:20px;">查看管理员</span></div>
+      	<div id="viewUserInfo" style="width:400px;height:180px;margin-top:10px;"></div>
+      	<div style="width:400px;height:60px;">
+      	    <div id="userCloseBtn2" style="float:right;cursor:pointer;margin-right:40px;"><img src="../image/save2.png" alt="关闭" /></div>
+      	</div>
+      </div>      	
+
+    </body>
+</html>

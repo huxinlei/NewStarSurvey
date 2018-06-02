@@ -1,0 +1,4 @@
+DRIVER_CLASS=com.microsoft.sqlserver.jdbc.SQLServerDriver
+DRIVER_URL=jdbc:sqlserver://127.0.0.1;DatabaseName=survey
+DATABASE_USER=sa
+DATABASE_PASSWORD=123456

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+   <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>PictureCheckCode</servlet-name>
+    <servlet-class>edu.bdu.tools.PictureCheckCode</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>SurveyVisitAction</servlet-name>
+    <servlet-class>edu.bdu.controller.SurveyVisitAction</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>CreateResult</servlet-name>
+    <servlet-class>edu.bdu.controller.CreateResult</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>AnyUserVisitAction</servlet-name>
+    <servlet-class>edu.bdu.controller.AnyUserVisitAction</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>AdminIndexAction</servlet-name>
+    <servlet-class>edu.bdu.controller.AdminIndexAction</servlet-class>
+  </servlet>
+    <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>UserAdminIndexAction</servlet-name>
+    <servlet-class>edu.bdu.controller.UserAdminIndexAction</servlet-class>
+  </servlet>
+  <servlet>
+    <description>admin manage survey action</description>
+    <display-name>admin manage survey action</display-name>
+    <servlet-name>SurveyManageAction</servlet-name>
+    <servlet-class>edu.bdu.controller.SurveyManageAction</servlet-class>
+  </servlet>
+  <servlet>
+    <description>admin manage survey action</description>
+    <display-name>admin manage survey action</display-name>
+    <servlet-name>UserSurveyManageAction</servlet-name>
+    <servlet-class>edu.bdu.controller.UserSurveyManageAction</servlet-class>
+  </servlet>
+  <servlet>
+    <description>admin manage user action</description>
+    <display-name>admin manage user action</display-name>
+    <servlet-name>UserManageAction</servlet-name>
+    <servlet-class>edu.bdu.controller.UserManageAction</servlet-class>
+  </servlet>
+  <servlet>
+    <description>admin manage visitor action</description>
+    <display-name>admin manage visitor action</display-name>
+    <servlet-name>VisitorManageAction</servlet-name>
+    <servlet-class>edu.bdu.controller.VisitorManageAction</servlet-class>
+  </servlet>
+
+
+
+
+
+
+
+  
+  <servlet-mapping>
+    <servlet-name>PictureCheckCode</servlet-name>
+    <url-pattern>/ImageCode</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SurveyVisitAction</servlet-name>
+    <url-pattern>/SurveyVisitAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CreateResult</servlet-name>
+    <url-pattern>/CreateResult</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AnyUserVisitAction</servlet-name>
+    <url-pattern>/anyUser/AnyUserVisitAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminIndexAction</servlet-name>
+    <url-pattern>/servlet/AdminIndexAction</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>UserAdminIndexAction</servlet-name>
+    <url-pattern>/userservlet/UserAdminIndexAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SurveyManageAction</servlet-name>
+    <url-pattern>/servlet/SurveyManageAction</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>UserSurveyManageAction</servlet-name>
+    <url-pattern>/userservlet/UserSurveyManageAction</url-pattern>
+  </servlet-mapping> 
+  <servlet-mapping>
+    <servlet-name>UserManageAction</servlet-name>
+    <url-pattern>/servlet/UserManageAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>VisitorManageAction</servlet-name>
+    <url-pattern>/servlet/VisitorManageAction</url-pattern>
+  </servlet-mapping>
+  
+  
+  <filter>
+    <filter-name>logincheck</filter-name>
+    <filter-class>edu.bdu.tools.LoginFilter</filter-class>
+  </filter>
+ <filter>
+ 	<filter-name>operatorcheck</filter-name>
+ 	<filter-class>edu.bdu.tools.OperatorFilter</filter-class>
+ </filter>
+ <filter>
+ 	<filter-name>operatorusercheck</filter-name>
+ 	<filter-class>edu.bdu.tools.UserOperatorFilter</filter-class>
+ </filter>
+  
+  <filter-mapping>
+     <filter-name>logincheck</filter-name>
+     <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+  
+<filter-mapping>
+  <filter-name>operatorcheck</filter-name>
+  <url-pattern>/servlet/*</url-pattern>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>operatorusercheck</filter-name>
+  <url-pattern>/userservlet/*</url-pattern>
+</filter-mapping>
+
+ <error-page>
+    <error-code>404</error-code>
+    <location>/errornotfound.jsp</location>
+ </error-page>
+  <error-page>
+   <exception-type>java.lang.Exception</exception-type>
+   <location>/showerror.jsp</location>
+  </error-page>
+ <!--   <session-config>
+   <session-timeout>1000</session-timeout>
+  </session-config>  -->
+</web-app>
